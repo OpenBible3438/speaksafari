@@ -68,10 +68,6 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.featured_play_list_rounded),
             label: '프로젝트',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: '임직원',
-          ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
