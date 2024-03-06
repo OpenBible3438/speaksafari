@@ -1,5 +1,9 @@
-class Card extends ConsumerWidget {
-  const Card({
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:speak_safari/src/service/theme_service.dart';
+
+class CardComponent extends ConsumerWidget {
+  const CardComponent({
     super.key,
     required this.child,
     this.padding,
@@ -12,24 +16,19 @@ class Card extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ref.color.surface,
-        borderRadius: isRoundAll ?? false
-            ? BorderRadius.circular(24)
-            : const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        boxShadow: ref.deco.shadow,
-      ),
-      padding: padding ??
-          const EdgeInsets.only(
-            top: 32,
-            bottom: 16,
+    return  Container(
+      child: SizedBox(
+        height: 80,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Card(
+          shape: ContinuousRectangleBorder(
+              borderRadius:
+              BorderRadius.circular(25.0),
           ),
-      child: SafeArea(
-        child: child,
+          elevation: 4.0,
+          color: ref.context.color.primary,
+          child: child,
+        ),
       ),
     );
   }
