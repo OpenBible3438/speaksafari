@@ -74,6 +74,48 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///D:/flutter/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.0+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.1.21",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-5.7.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-2.4.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.3+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "http",
       "rootUri": "file:///Users/nete4/.pub-cache/hosted/pub.dev/http-1.2.0",
       "packageUri": "lib/",
@@ -86,6 +128,7 @@
       "languageVersion": "2.12"
     },
     {
+<<<<<<< HEAD
       "name": "leak_tracker",
       "rootUri": "file:///Users/nete4/.pub-cache/hosted/pub.dev/leak_tracker-10.0.0",
       "packageUri": "lib/",
@@ -102,6 +145,12 @@
       "rootUri": "file:///Users/nete4/.pub-cache/hosted/pub.dev/leak_tracker_testing-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+=======
+      "name": "js",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.6.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+>>>>>>> a52ae68e3cac8b5119a4725406924bf454bb2dcb
     },
     {
       "name": "lints",
@@ -152,8 +201,32 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "provider",
       "rootUri": "file:///Users/nete4/.pub-cache/hosted/pub.dev/provider-6.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sign_in_with_apple",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple-5.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "sign_in_with_apple_platform_interface",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple_platform_interface-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sign_in_with_apple_web",
+      "rootUri": "file:///C:/Users/%EC%9D%B4%ED%8F%AC%EB%84%B7/AppData/Local/Pub/Cache/hosted/pub.dev/sign_in_with_apple_web-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -254,7 +327,11 @@
       "languageVersion": "3.2"
     }
   ],
+<<<<<<< HEAD
   "generated": "2024-03-06T04:21:25.662597Z",
+=======
+  "generated": "2024-03-06T04:42:25.012853Z",
+>>>>>>> a52ae68e3cac8b5119a4725406924bf454bb2dcb
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }
