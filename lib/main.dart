@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       theme: context.themeService.themeData,
-      initialRoute: RoutePath.login,
+      initialRoute: RoutePath.main,
       onGenerateRoute: RoutePath.onGenerateRoute,
     );
   }
