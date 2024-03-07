@@ -8,13 +8,14 @@ class MainPage extends StatefulWidget {
     super.key,
   });
 
+  @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
   /* Bottom Tab Bar */
   int _selectedIndex = 0; // 현재 선택된 탭의 인덱스
-  final List<String> _appBarTitle = ['홈', '게시판', '프로젝트'];
+  final List<String> _appBarTitle = ['Home', 'Chat', '단어 퀴즈'];
 
   // 각 탭에 해당하는 위젯 리스트
   static const List<Widget> _widgetOptions = <Widget>[
@@ -24,9 +25,10 @@ class _MainPageState extends State<MainPage> {
   ];
   // 탭 선택 시 호출되는 함수
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index; // 선택된 탭의 인덱스를 업데이트
-      // context.read<ProjectProvider>().resetMyProjects(); // 프로젝트 탭 초기화
+    setState(
+      () {
+        _selectedIndex = index; // 선택된 탭의 인덱스를 업데이트
+        // context.read<ProjectProvider>().resetMyProjects(); // 프로젝트 탭 초기화
       },
     );
   }
@@ -34,23 +36,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_appBarTitle[_selectedIndex]),
-        actions: [
-          IconButton(
-            onPressed: () {
-              debugPrint('giftcard');
-            },
-            icon: Icon(Icons.card_giftcard),
-          ),
-          IconButton(
-            onPressed: () {
-              debugPrint('settings');
-            },
-            icon: Icon(Icons.settings),
-          )
-        ],
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -58,19 +43,15 @@ class _MainPageState extends State<MainPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: '홈',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.event_note),
-            label: '게시판',
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.featured_play_list_rounded),
-            label: '프로젝트',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: '임직원',
+            label: 'Quiz',
           ),
         ],
         currentIndex: _selectedIndex,
