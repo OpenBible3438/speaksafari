@@ -7,10 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5106d31e-b70b-469d-8fbc-da1632fbea49" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/theme/component/card/small_hor_card.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/theme/component/card/vertical_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/view/main/home/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/view/main/home/home_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/view/main/main_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/view/main/main_page.dart" afterDir="false" />

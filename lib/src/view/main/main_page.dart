@@ -36,6 +36,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
       appBar: AppBar(
         title: Text(_appBarTitle[_selectedIndex]),
         actions: [
@@ -53,6 +54,9 @@ class _MainPageState extends State<MainPage> {
           )
         ],
       ),
+=======
+
+>>>>>>> 1e687b06725f6d91491894e6cb40cdcc620a20ec
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
