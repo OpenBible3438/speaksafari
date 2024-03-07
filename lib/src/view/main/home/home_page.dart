@@ -43,6 +43,8 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
+
+
             ],
           ),
         ),
@@ -246,9 +248,12 @@ class HomePage extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const AssetIcon(
-                                "star",
-                                color: Colors.redAccent,
+                              SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: Image.asset('assets/icons/rankimage.png',
+                                  color: Colors.blue,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0),
