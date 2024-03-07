@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:speak_safari/theme/component/asset_icon.dart';
@@ -28,8 +29,18 @@ class HomePage extends StatelessWidget {
           child:  Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Hello, 00000",
-                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+              DefaultTextStyle(
+                style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3,
+                child: AnimatedTextKit(
+                  animatedTexts: [
+                    WavyAnimatedText('Hello, Welcome'),
+                    WavyAnimatedText('00000'),
+                  ],
+                  isRepeatingAnimation: false,
+                  onTap: () {
+                    print("Tap Event");
+                  },
+                ),
               ),
             ],
           ),
