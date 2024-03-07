@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   /* Bottom Tab Bar */
   int _selectedIndex = 0; // 현재 선택된 탭의 인덱스
-  final List<String> _appBarTitle = ['Home', 'Chat', 'Quiz'];
+  final List<String> _appBarTitle = ['Home', 'Chat', '단어 퀴즈'];
 
   // 각 탭에 해당하는 위젯 리스트
   static const List<Widget> _widgetOptions = <Widget>[
@@ -27,9 +27,9 @@ class _MainPageState extends State<MainPage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index; // 선택된 탭의 인덱스를 업데이트
-
       // context.read<ProjectProvider>().resetMyProjects(); // 프로젝트 탭 초기화
-    });
+      },
+    );
   }
 
   @override
