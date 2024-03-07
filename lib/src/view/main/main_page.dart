@@ -25,9 +25,10 @@ class _MainPageState extends State<MainPage> {
   ];
   // 탭 선택 시 호출되는 함수
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index; // 선택된 탭의 인덱스를 업데이트
-      // context.read<ProjectProvider>().resetMyProjects(); // 프로젝트 탭 초기화
+    setState(
+      () {
+        _selectedIndex = index; // 선택된 탭의 인덱스를 업데이트
+        // context.read<ProjectProvider>().resetMyProjects(); // 프로젝트 탭 초기화
       },
     );
   }
