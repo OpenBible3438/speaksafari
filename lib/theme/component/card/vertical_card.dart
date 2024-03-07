@@ -18,7 +18,7 @@ class VerticalCardComponent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return  Container(
       child: SizedBox(
-        height: 150,
+        height: 160,
         width: MediaQuery.of(context).size.width * 0.3,
         child: Card(
           shape: ContinuousRectangleBorder(

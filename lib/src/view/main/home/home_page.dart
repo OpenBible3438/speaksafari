@@ -16,6 +16,7 @@ class HomePage extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     // TODO: implement build
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
@@ -90,6 +91,7 @@ class HomePage extends StatelessWidget {
               top : 10.0, left: width  * 0.1
           ),
           child: const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Text("Today word ",
               style: TextStyle(
@@ -175,7 +177,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              AssetIcon("basket"),
+                              AssetIcon("sunny", color : Colors.redAccent),
                             ],
                           ),
                         ],
