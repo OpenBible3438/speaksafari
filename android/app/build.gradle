@@ -39,7 +39,7 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-
+/*
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.speak_safari"
@@ -58,6 +58,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+*/    
 }
 
 flutter {
