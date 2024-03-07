@@ -1,5 +1,4 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:speak_safari/theme/component/asset_icon.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
