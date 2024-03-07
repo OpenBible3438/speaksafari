@@ -96,48 +96,19 @@ class HomePage extends StatelessWidget {
           ],
         )),
         Padding(
-<<<<<<< HEAD
           padding: EdgeInsets.only(top: 10.0, left: width * 0.1),
-          child: const Row(
-            children: [
-              Text(
-                "Today word ",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20.0,
-                ),
-              ),
-=======
-          padding: EdgeInsets.only(
-              top : 10.0, left: width  * 0.1
-          ),
           child:  Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Text("Today word ",
               style: AppTypo(typo: const NotoSans(), fontColor: Colors.black).headline2
                ),
->>>>>>> af763e7cebffb11339d1a86b15e76d73b96880f8
             ],
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-<<<<<<< HEAD
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.1),
-              child: const VerticalCardComponent(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "desolate",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w700),
-=======
               Padding(
                 padding: EdgeInsets.only(
                     left :  width * 0.1 ),
@@ -146,21 +117,15 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("desolate", style: AppTypo(typo: const NotoSans(), fontColor: Colors.white).headline3,
->>>>>>> af763e7cebffb11339d1a86b15e76d73b96880f8
                     ),
                     Text(
                       "황량한, 적막한",
                       style: TextStyle(
                         color: Colors.white,
-<<<<<<< HEAD
-                        fontSize: 13.0,
-                      ),
-=======
                         fontWeight: NotoSans().semiBold,
                         fontFamily: NotoSans().name,
                         fontSize: 14.0,
                       )
->>>>>>> af763e7cebffb11339d1a86b15e76d73b96880f8
                     ),
                   ],
                 ),

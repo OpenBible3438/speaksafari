@@ -37,7 +37,8 @@ dependencies:
   provider: ^6.1.2
   flutter_svg: ^2.0.10+1
   sign_in_with_apple: ^5.0.0
-#  google_sign_in: ^6.2.1
+  google_sign_in: ^6.2.1
+  flutter_riverpod: ^2.4.10
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,6 +85,13 @@ flutter:
           weight: 400
         - asset: assets/fonts/NotoSans-SemiBold.ttf
           weight: 600
+    - family: soyo_maple
+      fonts:
+        - asset: assets/fonts/SOYO-Maple-Regular.ttf
+          weight: 500
+        - asset: assets/fonts/SOYO-Maple-Bold.ttf
+          weight: 700
+
   assets:
     - assets/icons/
   #   - family: Trajan Pro
