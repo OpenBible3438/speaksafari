@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1088267868037",
+    "project_id": "speak-safari",
+    "storage_bucket": "speak-safari.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088267868037:android:cbbe2d39292e3deda8d6ec",
+        "android_client_info": {
+          "package_name": "com.example.speak_safari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088267868037-ms413gbbsr2vme1a3ckrulr91s9hmngt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgopl2Nc3u0G9yE7n0BOiPsh1I7Sm8glk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088267868037-ms413gbbsr2vme1a3ckrulr91s9hmngt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
