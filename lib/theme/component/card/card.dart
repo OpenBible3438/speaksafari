@@ -22,8 +22,8 @@ class CardComponent extends ConsumerWidget {
         width: MediaQuery.of(context).size.width * 0.8,
         child: Card(
           shape: ContinuousRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(25.0),
+            borderRadius:
+            BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
           color: ref.context.color.primary,

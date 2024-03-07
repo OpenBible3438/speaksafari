@@ -85,6 +85,13 @@ flutter:
           weight: 400
         - asset: assets/fonts/NotoSans-SemiBold.ttf
           weight: 600
+    - family: soyo_maple
+      fonts:
+        - asset: assets/fonts/SOYO-Maple-Regular.ttf
+          weight: 500
+        - asset: assets/fonts/SOYO-Maple-Bold.ttf
+          weight: 700
+
   assets:
     - assets/icons/
   #   - family: Trajan Pro
