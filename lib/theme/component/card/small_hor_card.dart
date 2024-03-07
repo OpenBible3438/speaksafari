@@ -16,14 +16,13 @@ class SmallHorCardComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return  Container(
+    return Container(
       child: SizedBox(
         height: 80,
         width: MediaQuery.of(context).size.width * 0.45,
         child: Card(
           shape: ContinuousRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
           color: ref.context.color.primary,
