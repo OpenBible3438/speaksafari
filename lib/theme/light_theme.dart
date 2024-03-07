@@ -32,7 +32,7 @@ class LightTheme implements AppTheme {
 
   @override
   late AppTypo typo = AppTypo(
-    typo: const NotoSans(),
+    typo: const SoyoMaple(),
     fontColor: color.text,
   );
 
