@@ -1,5 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/theme/component/asset_icon.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/small_hor_card.dart';
@@ -33,11 +35,11 @@ class HomePage extends StatelessWidget {
                 child: AnimatedTextKit(
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
-                    WavyAnimatedText('00000'),
+                    WavyAnimatedText('Tom Hanks'),
                   ],
                   isRepeatingAnimation: false,
                   onTap: () {
-                    print("Tap Event");
+                    print("Go To MyPage");
                   },
                 ),
               ),
@@ -67,30 +69,39 @@ class HomePage extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    const AssetIcon("plus"),
+                     Icon(
+                      Icons.done,
+                      color: context.color.tertiary,
+                    ),
                     Text("일",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    const AssetIcon("minus"),
+                    const Icon(
+                      Icons.close,
+                      color: Colors.red ,
+                    ),
                     Text("월",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    const AssetIcon("plus"),
+                     Icon(
+                      Icons.done,
+                      color: context.color.tertiary,
+                    ),
                     Text("화",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    const AssetIcon(
-                      "star",
-                      color: Colors.red,
+                    const Icon(
+                      Icons.pets,
+                      color: Colors.brown,
                     ),
                     Text("수",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
@@ -98,9 +109,9 @@ class HomePage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    const AssetIcon(
-                      "star",
-                      color: Colors.red,
+                    const Icon(
+                      Icons.pets,
+                      color: Colors.brown,
                     ),
                     Text("목",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
@@ -108,9 +119,9 @@ class HomePage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    const AssetIcon(
-                      "star",
-                      color: Colors.red,
+                    const Icon(
+                      Icons.pets,
+                      color: Colors.brown,
                     ),
                     Text("금",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
@@ -118,9 +129,9 @@ class HomePage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    const AssetIcon(
-                      "star",
-                      color: Colors.red,
+                    const Icon(
+                      Icons.pets,
+                      color: Colors.brown,
                     ),
                     Text("토",
                         style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
@@ -133,17 +144,24 @@ class HomePage extends StatelessWidget {
         const Spacer(flex: 1
           ,)
         ,
-        Padding(
-          padding: EdgeInsets.only( left: width * 0.1),
-          child:  Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-               Text("Today word ",
-              style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
-               ),
-            ],
-          ),
+        Stack(
+          children: [
+
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only( left: width * 0.1),
+                  child:Text("Today word ",
+                      style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -177,8 +195,8 @@ class HomePage extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const AssetIcon(
-                                "check",
+                              const Icon(
+                                Icons.local_library,
                                 color: Colors.redAccent,
                               ),
                               Padding(
@@ -207,7 +225,10 @@ class HomePage extends StatelessWidget {
                                         fontColor: Colors.black, fontWeight: FontWeight.w400).body1
                                 ),
                               ),
-                             const  AssetIcon("sunny", color : Colors.redAccent),
+                              const Icon(
+                                Icons.pets,
+                                color: Colors.brown,
+                              ),
                             ],
                           ),
                         ],
@@ -226,7 +247,7 @@ class HomePage extends StatelessWidget {
                           Row(
                             children: [
                               const AssetIcon(
-                                "check",
+                                "star",
                                 color: Colors.redAccent,
                               ),
                               Padding(
@@ -258,7 +279,10 @@ class HomePage extends StatelessWidget {
                               const Spacer(
                                 flex: 1,
                               ),
-                              const AssetIcon("basket", color: Colors.blueAccent,),
+                              const Icon(
+                                Icons.sentiment_neutral,
+                                color: Colors.black,
+                              ),
                             ],
                           ),
                         ],
