@@ -29,3 +29,20 @@ class NotoSans implements Typo {
   @override
   final FontWeight semiBold = FontWeight.w600;
 }
+
+class SoyoMaple implements Typo {
+  const SoyoMaple();
+
+  @override
+  final String name = 'soyo_maple';
+
+  @override
+  final FontWeight light = FontWeight.w300;
+
+  @override
+  final FontWeight regular = FontWeight.w400;
+
+  @override
+  final FontWeight semiBold = FontWeight.w600;
+}
+

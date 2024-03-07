@@ -15,21 +15,39 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-
+    var height = MediaQuery.of(context).size.height;
     // TODO: implement build
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+
+
         Padding(
-          padding: EdgeInsets.only(left: width * 0.1),
-          child: const Row(
+          padding: EdgeInsets.only( top : height * 0.1, left: width * 0.1),
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("내 진도 상태"),
+              Text("Hello, 00000",
+                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+              ),
             ],
           ),
         ),
-        const CardComponent(
+        const Spacer(flex: 1
+          ,)
+        ,
+        Padding(
+          padding: EdgeInsets.only(left: width * 0.1),
+          child:  Row(
+            children: [
+              Text("내 진도 상태",
+              style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+              ),
+            ],
+          ),
+        ),
+         CardComponent(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
@@ -39,69 +57,79 @@ class HomePage extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    AssetIcon("plus"),
-                    Text("일"),
+                    const AssetIcon("plus"),
+                    Text("일",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon("minus"),
-                    Text("월"),
+                    const AssetIcon("minus"),
+                    Text("월",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon("plus"),
-                    Text("화"),
+                    const AssetIcon("plus"),
+                    Text("화",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon(
+                    const AssetIcon(
                       "star",
                       color: Colors.red,
                     ),
-                    Text("수"),
+                    Text("수",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon(
+                    const AssetIcon(
                       "star",
                       color: Colors.red,
                     ),
-                    Text("목"),
+                    Text("목",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon(
+                    const AssetIcon(
                       "star",
                       color: Colors.red,
                     ),
-                    Text("금"),
+                    Text("금",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
                 Column(
                   children: [
-                    AssetIcon(
+                    const AssetIcon(
                       "star",
                       color: Colors.red,
                     ),
-                    Text("토"),
+                    Text("토",
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
                   ],
                 ),
               ],
             )
           ],
         )),
+        const Spacer(flex: 1
+          ,)
+        ,
         Padding(
-          padding: EdgeInsets.only(top: 10.0, left: width * 0.1),
+          padding: EdgeInsets.only( left: width * 0.1),
           child:  Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
                Text("Today word ",
-              style: AppTypo(typo: const NotoSans(), fontColor: Colors.black).headline2
+              style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
                ),
             ],
           ),
@@ -116,16 +144,11 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("desolate", style: AppTypo(typo: const NotoSans(), fontColor: Colors.white).headline3,
+                    Text("desolate", style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.white, fontWeight: FontWeight.w600).headline6
                     ),
                     Text(
                       "황량한, 적막한",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: NotoSans().semiBold,
-                        fontFamily: NotoSans().name,
-                        fontSize: 14.0,
-                      )
+                      style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.white, fontWeight: FontWeight.w600).body1
                     ),
                   ],
                 ),
@@ -136,27 +159,26 @@ class HomePage extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: width * 0.1),
-                  child: const SmallHorCardComponent(
+                  child: SmallHorCardComponent(
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Row(
                             children: [
-                              AssetIcon(
+                              const AssetIcon(
                                 "check",
                                 color: Colors.redAccent,
                               ),
                               Padding(
-                                padding: EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(left: 8.0),
                                 child: Text(
                                   "단어 퀴즈",
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w500),
+                                    style: AppTypo(typo: const SoyoMaple(),
+                                    fontColor: Colors.black, fontWeight: FontWeight.w600).body1
+                                    ),
                                 ),
-                              ),
                             ],
                           ),
                           Row(
@@ -164,20 +186,18 @@ class HomePage extends StatelessWidget {
                             children: [
                               Text(
                                 "5",
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w700),
+                                  style: AppTypo(typo: const SoyoMaple(),
+                                      fontColor: Colors.black, fontWeight: FontWeight.w600).headline2
                               ),
                               Padding(
-                                padding: EdgeInsets.only(right: 8.0),
+                                padding: const EdgeInsets.only(right: 8.0),
                                 child: Text(
                                   "일 연속 적중",
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w500),
+                                    style: AppTypo(typo: const SoyoMaple(),
+                                        fontColor: Colors.black, fontWeight: FontWeight.w400).body1
                                 ),
                               ),
-                              AssetIcon("sunny", color : Colors.redAccent),
+                             const  AssetIcon("sunny", color : Colors.redAccent),
                             ],
                           ),
                         ],
@@ -187,15 +207,15 @@ class HomePage extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: width * 0.1),
-                  child: const SmallHorCardComponent(
+                  child: SmallHorCardComponent(
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Row(
                             children: [
-                              AssetIcon(
+                              const AssetIcon(
                                 "check",
                                 color: Colors.redAccent,
                               ),
@@ -203,9 +223,8 @@ class HomePage extends StatelessWidget {
                                 padding: EdgeInsets.only(left: 8.0),
                                 child: Text(
                                   "HighestRank",
-                                  style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w700),
+                                    style: AppTypo(typo: const SoyoMaple(),
+                                        fontColor: Colors.black, fontWeight: FontWeight.w600).subtitle1
                                 ),
                               ),
                             ],
@@ -213,25 +232,23 @@ class HomePage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Spacer(
+                              const Spacer(
                                 flex: 2,
                               ),
                               Text(
                                 "64",
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w700),
+                                  style: AppTypo(typo: const SoyoMaple(),
+                                      fontColor: Colors.black, fontWeight: FontWeight.w600).headline2
                               ),
                               Text(
                                 "%",
-                                style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w500),
+                                  style: AppTypo(typo: const SoyoMaple(),
+                                      fontColor: Colors.black, fontWeight: FontWeight.w600).body1
                               ),
-                              Spacer(
+                              const Spacer(
                                 flex: 1,
                               ),
-                              AssetIcon("basket"),
+                              const AssetIcon("basket", color: Colors.blueAccent,),
                             ],
                           ),
                         ],
@@ -243,6 +260,56 @@ class HomePage extends StatelessWidget {
             )
           ],
         ),
+        const Spacer(flex: 1
+          ,)
+        ,
+        Padding(
+          padding: EdgeInsets.only(left: width * 0.1),
+          child:  Row(
+            children: [
+              Text("단어 Quiz",
+                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+              ),
+            ],
+          ),
+        ),
+        CardComponent(
+          child: Column(
+            children: [
+              const Spacer(),
+              Text(
+                '"아슬아슬했어"',
+                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body1
+              ),
+              RichText(
+                text: TextSpan(
+                    style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body3,
+                  children: [
+                    const TextSpan(text: 'That was a '),
+                    WidgetSpan(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          '                     ',
+                          style: TextStyle(backgroundColor: Colors.transparent),
+                        ),
+                      ),
+                    ),
+                    const TextSpan(text: '. We almost hit that car!'),
+                  ],
+                ),
+              ),
+              const Spacer(),
+            ],
+          ),
+        ),
+        const Spacer(flex: 1
+          ,)
+        ,
+
       ],
     );
   }
