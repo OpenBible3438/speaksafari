@@ -97,6 +97,7 @@ class HomePage extends StatelessWidget {
         )),
         Padding(
           padding: EdgeInsets.only(top: 10.0, left: width * 0.1),
+<<<<<<< HEAD
           child: const Row(
             children: [
               Text(
@@ -106,12 +107,21 @@ class HomePage extends StatelessWidget {
                   fontSize: 20.0,
                 ),
               ),
+=======
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+               Text("Today word ",
+              style: AppTypo(typo: const NotoSans(), fontColor: Colors.black).headline2
+               ),
+>>>>>>> f48dba80bb782a494fb2eb6403f17d59720c2e8a
             ],
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+<<<<<<< HEAD
             Padding(
               padding: EdgeInsets.only(left: width * 0.1),
               child: const VerticalCardComponent(
@@ -124,13 +134,30 @@ class HomePage extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 18.0,
                           fontWeight: FontWeight.w700),
+=======
+              Padding(
+                padding: EdgeInsets.only(
+                    left :  width * 0.1 ),
+                child:  VerticalCardComponent(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("desolate", style: AppTypo(typo: const NotoSans(), fontColor: Colors.white).headline3,
+>>>>>>> f48dba80bb782a494fb2eb6403f17d59720c2e8a
                     ),
                     Text(
                       "황량한, 적막한",
                       style: TextStyle(
                         color: Colors.white,
+<<<<<<< HEAD
                         fontSize: 13.0,
                       ),
+=======
+                        fontWeight: NotoSans().semiBold,
+                        fontFamily: NotoSans().name,
+                        fontSize: 14.0,
+                      )
+>>>>>>> f48dba80bb782a494fb2eb6403f17d59720c2e8a
                     ),
                   ],
                 ),
