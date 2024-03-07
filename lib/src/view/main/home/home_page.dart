@@ -4,6 +4,8 @@ import 'package:speak_safari/theme/component/asset_icon.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/small_hor_card.dart';
 import 'package:speak_safari/theme/component/card/vertical_card.dart';
+import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/theme/res/typo.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -13,8 +15,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+
     // TODO: implement build
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
@@ -93,40 +97,35 @@ class HomePage extends StatelessWidget {
         )),
         Padding(
           padding: EdgeInsets.only(top: 10.0, left: width * 0.1),
-          child: const Row(
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                "Today word ",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20.0,
-                ),
-              ),
+               Text("Today word ",
+              style: AppTypo(typo: const NotoSans(), fontColor: Colors.black).headline2
+               ),
             ],
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.1),
-              child: const VerticalCardComponent(
+              Padding(
+                padding: EdgeInsets.only(
+                    left :  width * 0.1 ),
+                child:  VerticalCardComponent(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "desolate",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w700),
+                    Text("desolate", style: AppTypo(typo: const NotoSans(), fontColor: Colors.white).headline3,
                     ),
                     Text(
                       "황량한, 적막한",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 13.0,
-                      ),
+                        fontWeight: NotoSans().semiBold,
+                        fontFamily: NotoSans().name,
+                        fontSize: 14.0,
+                      )
                     ),
                   ],
                 ),
@@ -178,7 +177,7 @@ class HomePage extends StatelessWidget {
                                       fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              AssetIcon("basket"),
+                              AssetIcon("sunny", color : Colors.redAccent),
                             ],
                           ),
                         ],
