@@ -1,9 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:speak_safari/src/view/login/auth_provider.dart';
+import 'firebase_options.dart';
+
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/util/route_path.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseAuth.instance.userChanges().listen((User? user) {
+    if (user == null) {
+      print('User is currently signed out!');
+    } else {
+      print('User is signed in!');
+    }
+  });
+
   runApp(
     MultiProvider(
       providers: [
@@ -13,6 +31,7 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => ThemeService(),
         ),
+        ChangeNotifierProvider(create: (context) => FirebaseAuthProvider()),
         // ChangeNotifierProvider(
         //   create: (context) => LangService(),
         // ),
@@ -43,7 +62,8 @@ class MyApp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       theme: context.themeService.themeData,
-      initialRoute: RoutePath.main,
+      // initialRoute: RoutePath.main,
+      initialRoute: isLoggedIn() ? RoutePath.login : RoutePath.main,
       onGenerateRoute: RoutePath.onGenerateRoute,
     );
   }

@@ -36,23 +36,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_appBarTitle[_selectedIndex]),
-        actions: [
-          IconButton(
-            onPressed: () {
-              debugPrint('giftcard');
-            },
-            icon: const Icon(Icons.card_giftcard),
-          ),
-          IconButton(
-            onPressed: () {
-              debugPrint('settings');
-            },
-            icon: const Icon(Icons.settings),
-          )
-        ],
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

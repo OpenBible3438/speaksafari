@@ -1,18 +1,24 @@
 part of 'app_theme.dart';
 
 class AppTypo {
+  
   AppTypo({
     required this.typo,
     required this.fontColor,
+    this.fontWeight,
   });
 
+  
+  
   /// Typo
   final Typo typo;
+
 
   /// Font Weight
   late FontWeight light = typo.light;
   late FontWeight regular = typo.regular;
   late FontWeight semiBold = typo.semiBold;
+  FontWeight? fontWeight = FontWeight.w400;
 
   /// Font Color
   final Color fontColor;
@@ -21,42 +27,42 @@ class AppTypo {
   late final TextStyle headline1 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 28,
     color: fontColor,
   );
   late final TextStyle headline2 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 24,
     color: fontColor,
   );
   late final TextStyle headline3 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 21,
     color: fontColor,
   );
   late final TextStyle headline4 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 20,
     color: fontColor,
   );
   late final TextStyle headline5 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 19,
     color: fontColor,
   );
   late final TextStyle headline6 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 18,
     color: fontColor,
   );
@@ -65,14 +71,14 @@ class AppTypo {
   late final TextStyle subtitle1 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 16,
     color: fontColor,
   );
   late final TextStyle subtitle2 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 15,
     color: fontColor,
   );
@@ -81,15 +87,28 @@ class AppTypo {
   late final TextStyle body1 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 14,
     color: fontColor,
   );
   late final TextStyle body2 = TextStyle(
     height: 1.3,
     fontFamily: typo.name,
-    fontWeight: typo.regular,
+    fontWeight: fontWeight ?? typo.regular,
     fontSize: 12,
+    color: fontColor,
+  );
+  late final TextStyle body4 = TextStyle(
+    height: 1.3,
+    fontFamily: typo.name,
+    fontWeight: fontWeight ?? typo.regular,
+    fontSize: 10,
+    color: fontColor,
+  );  late final TextStyle body3 = TextStyle(
+    height: 1.3,
+    fontFamily: typo.name,
+    fontWeight: fontWeight ?? typo.regular,
+    fontSize: 11,
     color: fontColor,
   );
 }
