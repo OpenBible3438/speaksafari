@@ -23,8 +23,6 @@ class HomePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-
-
         Padding(
           padding: EdgeInsets.only( top : height * 0.1, left: width * 0.1),
           child:  Row(
@@ -61,88 +59,96 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-         CardComponent(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                     Icon(
-                      Icons.done,
-                      color: context.color.tertiary,
-                    ),
-                    Text("일",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Icon(
-                      Icons.close,
-                      color: Colors.red ,
-                    ),
-                    Text("월",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                     Icon(
-                      Icons.done,
-                      color: context.color.tertiary,
-                    ),
-                    Text("화",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Icon(
-                      Icons.pets,
-                      color: Colors.brown,
-                    ),
-                    Text("수",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Icon(
-                      Icons.pets,
-                      color: Colors.brown,
-                    ),
-                    Text("목",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Icon(
-                      Icons.pets,
-                      color: Colors.brown,
-                    ),
-                    Text("금",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Icon(
-                      Icons.pets,
-                      color: Colors.brown,
-                    ),
-                    Text("토",
-                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
-                  ],
-                ),
-              ],
-            )
-          ],
-        )),
+        InkWell(
+          onTap: ( ){
+
+          },
+
+           child: CardComponent(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                       Icon(
+                        Icons.done,
+                        color: context.color.tertiary,
+                      ),
+                      Text("일",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Icon(
+                        Icons.close,
+                        color: Colors.red ,
+                      ),
+                      Text("월",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                       Icon(
+                        Icons.done,
+                        color: context.color.tertiary,
+                      ),
+                      Text("화",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Icon(
+                        Icons.pets,
+                        color: Colors.brown,
+                      ),
+                      Text("수",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Icon(
+                        Icons.pets,
+                        color: Colors.brown,
+                      ),
+                      Text("목",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Icon(
+                        Icons.pets,
+                        color: Colors.brown,
+                      ),
+                      Text("금",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Icon(
+                        Icons.pets,
+                        color: Colors.brown,
+                      ),
+                      Text("토",
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body2),
+                    ],
+                  ),
+                ],
+              )
+            ],
+                   ),
+
+           ),
+         ),
         const Spacer(flex: 1
           ,)
         ,
