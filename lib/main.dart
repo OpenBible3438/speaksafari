@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:speak_safari/src/view/login/auth_service.dart';
+import 'package:speak_safari/src/view/login/auth_provider.dart';
 import 'firebase_options.dart';
 
 import 'package:speak_safari/src/service/theme_service.dart';
@@ -31,7 +31,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => ThemeService(),
         ),
-        ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => FirebaseAuthProvider()),
         // ChangeNotifierProvider(
         //   create: (context) => LangService(),
         // ),
