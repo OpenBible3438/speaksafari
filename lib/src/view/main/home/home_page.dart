@@ -147,10 +147,9 @@ class HomePage extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left :  width * 0.1 ),
-                child:  VerticalCardComponent(
+            Padding(
+              padding: EdgeInsets.only(left: width * 0.1),
+              child: VerticalCardComponent(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
