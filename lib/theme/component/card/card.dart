@@ -8,22 +8,23 @@ class CardComponent extends ConsumerWidget {
     required this.child,
     this.padding,
     this.isRoundAll,
+    this.height = 80,
   });
 
   final Widget child;
   final EdgeInsets? padding;
   final bool? isRoundAll;
+  final double? height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return  Container(
+    return Container(
       child: SizedBox(
-        height: 80,
+        height: height,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Card(
           shape: ContinuousRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
           color: ref.context.color.primary,
