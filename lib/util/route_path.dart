@@ -10,6 +10,7 @@ abstract class RoutePath {
   static const String login = 'login';
   static const String chatroom = 'chatroom';
   static const String studyProgress = 'main/studyProgress';
+
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     late final Widget page;
     switch (settings.name) {

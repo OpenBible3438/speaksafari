@@ -35,7 +35,6 @@ class ChatListViewModel extends BaseViewModel {
     print("hi");
     try {
       print("asdf");
-      notifyListeners();
       return true;
     } catch (e) {
       print(e.toString());
