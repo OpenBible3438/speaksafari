@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:speak_safari/src/view/login/auth_provider.dart';
 import 'package:speak_safari/src/view/login/auth_service.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
 import 'package:speak_safari/theme/res/typo.dart';
@@ -18,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthService>(
+    return Consumer<FirebaseAuthProvider>(
       builder: (context, authService, child) {
         return Scaffold(
           body: Stack(
