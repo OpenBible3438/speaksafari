@@ -39,6 +39,8 @@ dependencies:
   sign_in_with_apple: ^5.0.0
   google_sign_in: ^6.2.1
   flutter_riverpod: ^2.4.10
+  firebase_core: ^2.26.0
+  firebase_auth: ^4.17.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -94,6 +96,7 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/images/
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
