@@ -188,5 +188,5 @@ class _ChatListPage extends State<ChatListPage> {
                   )));
     }
   }
-}
+
 BoxConstrains({required int minWidth, required int minHeight}) {}
