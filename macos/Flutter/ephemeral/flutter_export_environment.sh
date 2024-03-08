@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=D:\flutter\flutter"
-export "FLUTTER_APPLICATION_PATH=D:\workspace\prj\speak_safari"
+export "FLUTTER_ROOT=/Users/nete4/Developments/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/nete4/Desktop/flutter_practices/speaksafari"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
