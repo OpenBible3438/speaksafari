@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
-import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/textfield_card.dart';
 
 class NewChatPage extends StatefulWidget {
