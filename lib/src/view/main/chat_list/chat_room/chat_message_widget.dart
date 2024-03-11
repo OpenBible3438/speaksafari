@@ -19,7 +19,7 @@ class ChatMessageWidget extends StatelessWidget {
         Container(
             constraints: BoxConstraints(maxWidth: size.width * 0.7),
             decoration: BoxDecoration(
-              color: isUserMessage ? context.color.primary : Theme.of(context).colorScheme.surfaceVariant,
+              color: isUserMessage ? context.color.primary : Colors.grey,
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

@@ -265,7 +265,7 @@ class HomePage extends StatelessWidget {
                                 child: Text(
                                   "HighestRank",
                                     style: AppTypo(typo: const SoyoMaple(),
-                                        fontColor: Colors.black, fontWeight: FontWeight.w600).subtitle1
+                                        fontColor: Colors.black, fontWeight: FontWeight.w600).subtitle2
                                 ),
                               ),
                             ],
