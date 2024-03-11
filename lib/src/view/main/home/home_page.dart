@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
         ),
         InkWell(
           onTap: ( ){
-
+            Navigator.pushNamed(context, "chatroom");
           },
 
            child: CardComponent(
