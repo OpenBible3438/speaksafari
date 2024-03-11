@@ -22,6 +22,7 @@ abstract class RoutePath {
       case RoutePath.chatroom:
         page = const ChatRoomPage();
         break;
+
     }
 
     return MaterialPageRoute(

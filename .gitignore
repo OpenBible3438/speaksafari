@@ -66,3 +66,5 @@ lib/generated_plugin_registrant.dart
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter
+/.idea/libraries/Flutter_Plugins.xml
+/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024_03_11_1_11_PM__Changes_.xml

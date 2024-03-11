@@ -106,7 +106,7 @@ packages:
     source: hosted
     version: "5.9.7"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: a746f861618eef57a11d8b658a2db1fa5a336fc82ba65b7763d7e2292687de2b
@@ -142,6 +142,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  flutter_markdown:
+    dependency: "direct main"
+    description:
+      name: flutter_markdown
+      sha256: cb44f7831b23a6bdd0f501718b0d2e8045cbc625a15f668af37ddb80314821db
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.21"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -163,11 +171,27 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_tts:
+    dependency: "direct main"
+    description:
+      name: flutter_tts
+      sha256: cbb3fd43b946e62398560235469e6113e4fe26c40eab1b7cb5e7c417503fb3a8
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.8.5"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
+  google_generative_ai:
+    dependency: "direct main"
+    description:
+      name: google_generative_ai
+      sha256: b2d3f7277a85e3e6be4c4392c59e73ea211b5b6c8bb21c24c71fd411a2d1822e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -232,6 +256,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.0"
   js:
     dependency: transitive
     description:
@@ -272,6 +304,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      sha256: ef2a1298144e3f985cc736b22e0ccdaf188b5b3970648f2d9dc13efd1d9df051
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.2.2"
   matcher:
     dependency: transitive
     description:
@@ -376,6 +416,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  simple_gesture_detector:
+    dependency: transitive
+    description:
+      name: simple_gesture_detector
+      sha256: ba2cd5af24ff20a0b8d609cec3f40e5b0744d2a71804a2616ae086b9c19d19a3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -421,6 +469,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  table_calendar:
+    dependency: "direct main"
+    description:
+      name: table_calendar
+      sha256: "3f7950145168251aad4fa6c0a914b5ef4e9a82fa365bb349c3ac5378f866e771"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -502,5 +558,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.2.5 <4.0.0"
-  flutter: ">=3.16.6"
+  dart: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
