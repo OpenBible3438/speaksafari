@@ -56,188 +56,192 @@ class _WordQuizPageState extends State<WordQuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        LinearProgressIndicator(
-          value: _counter > 10 ? 1.0 : _counter / 10,
-          color: context.color.tertiary,
-        ),
-        const SizedBox(height: 20),
-        CardComponent(
-          height: 200,
-          child: Column(
-            children: [
-              const Spacer(),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      const TextSpan(text: 'That was a '),
-                      WidgetSpan(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.yellow,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Text(
-                            '                     ',
-                            style:
-                                TextStyle(backgroundColor: Colors.transparent),
-                          ),
-                        ),
-                      ),
-                      const TextSpan(text: '. We almost hit that car!'),
-                    ],
-                  ),
-                ),
-              ),
-              const Text(
-                '"아슬아슬했어"',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Button(
-              text: "close call",
-              backgroundColor: context.color.tertiary,
-              width: MediaQuery.of(context).size.width * 0.8,
-              onPressed: () {
-                showOverlay(context, true);
-                _quizCounter();
-
-                // 정답 BottomSheet
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.green.withOpacity(0.5),
-                  builder: (BuildContext context) {
-                    return Container(
-                      margin: const EdgeInsets.all(20),
-                      height: 130,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.check_circle_outline),
-                              const Text(
-                                '정답!',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _overlayEntry?.remove();
-                                },
-                                icon: const Icon(Icons.close),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Button(
-                            text: '계속하기',
-                            width: MediaQuery.of(context).size.width,
-                            backgroundColor: Colors.green,
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _overlayEntry?.remove();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  isDismissible: false,
-                );
-              },
+            LinearProgressIndicator(
+              value: _counter > 10 ? 1.0 : _counter / 10,
+              color: context.color.tertiary,
             ),
-            const SizedBox(height: 10),
-            Button(
-              text: "apple",
-              backgroundColor: context.color.tertiary,
-              width: MediaQuery.of(context).size.width * 0.8,
-              onPressed: () {
-                showOverlay(context, false);
-                _quizCounter();
-
-                // 오답 BottomSheet
-                showModalBottomSheet(
-                  backgroundColor: Colors.red.withOpacity(0.5),
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      margin: const EdgeInsets.all(20),
-                      height: 150,
-                      child: Column(
+            const SizedBox(height: 20),
+            CardComponent(
+              height: 200,
+              child: Column(
+                children: [
+                  const Spacer(),
+                  Container(
+                    margin: const EdgeInsets.all(10),
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.cancel_outlined),
-                              const Text(
-                                '오답',
-                                style: TextStyle(fontSize: 20),
+                          const TextSpan(text: 'That was a '),
+                          WidgetSpan(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.yellow,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _overlayEntry?.remove();
-                                },
-                                icon: const Icon(Icons.close),
+                              child: const Text(
+                                '                     ',
+                                style: TextStyle(
+                                    backgroundColor: Colors.transparent),
                               ),
-                            ],
-                          ),
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Answer : close call',
-                              style: TextStyle(fontSize: 20),
                             ),
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Button(
-                            text: '계속하기',
-                            width: MediaQuery.of(context).size.width,
-                            backgroundColor: Colors.red,
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _overlayEntry?.remove();
-                            },
-                          ),
+                          const TextSpan(text: '. We almost hit that car!'),
                         ],
                       ),
+                    ),
+                  ),
+                  const Text(
+                    '"아슬아슬했어"',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Column(
+              children: [
+                Button(
+                  text: "close call",
+                  backgroundColor: context.color.tertiary,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  onPressed: () {
+                    showOverlay(context, true);
+                    _quizCounter();
+
+                    // 정답 BottomSheet
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.green.withOpacity(0.5),
+                      builder: (BuildContext context) {
+                        return Container(
+                          margin: const EdgeInsets.all(20),
+                          height: 130,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.check_circle_outline),
+                                  const Text(
+                                    '정답!',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _overlayEntry?.remove();
+                                    },
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Button(
+                                text: '계속하기',
+                                width: MediaQuery.of(context).size.width,
+                                backgroundColor: Colors.green,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _overlayEntry?.remove();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      isDismissible: false,
                     );
                   },
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            Button(
-              text: "google",
-              backgroundColor: context.color.tertiary,
-              width: MediaQuery.of(context).size.width * 0.8,
-              onPressed: () {},
+                ),
+                const SizedBox(height: 10),
+                Button(
+                  text: "apple",
+                  backgroundColor: context.color.tertiary,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  onPressed: () {
+                    showOverlay(context, false);
+                    _quizCounter();
+
+                    // 오답 BottomSheet
+                    showModalBottomSheet(
+                      backgroundColor: Colors.red.withOpacity(0.5),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          margin: const EdgeInsets.all(20),
+                          height: 150,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.cancel_outlined),
+                                  const Text(
+                                    '오답',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _overlayEntry?.remove();
+                                    },
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Answer : close call',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Button(
+                                text: '계속하기',
+                                width: MediaQuery.of(context).size.width,
+                                backgroundColor: Colors.red,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _overlayEntry?.remove();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                Button(
+                  text: "google",
+                  backgroundColor: context.color.tertiary,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  onPressed: () {},
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
