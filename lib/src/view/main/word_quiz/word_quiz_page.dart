@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
@@ -13,6 +14,41 @@ class WordQuizPage extends StatefulWidget {
 }
 
 class _WordQuizPageState extends State<WordQuizPage> {
+  late final GenerativeModel _model;
+  static const _apiKey = String.fromEnvironment("API_KEY");
+
+  List<String> responseQuizDataList = [];
+
+  Future<void> getWordQuiz() async {
+    try {
+      _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey);
+
+      final content = [
+        Content.text('''
+  영어 단어 1개와 단어 형태를 변형하지 않은 예문 1개 그리고 영단어와 유사한 뜻을 가진 유사 단어 2개를 알려주고 아래 양식으로 응답해.
+
+  1. 영어 단어
+  2. 예문
+  3. 예문 한국어 번역
+  4. 유사단어 1
+  5. 유사단어 2''')
+      ];
+      final response = await _model.generateContent(content);
+
+      //debugPrint(response.text);
+      responseQuizDataList.add(response.text!);
+    } catch (e) {
+      debugPrint('Fail to getWordQuiz');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getWordQuiz();
+    debugPrint(responseQuizDataList.toString());
+  }
+
   int _counter = 1;
 
   void _quizCounter() {
