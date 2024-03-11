@@ -46,7 +46,11 @@ class _ChatListPage extends State<ChatListPage> {
                   ),
                   body: Column(
                     children: [
+                      SizedBox(
+                        height: 80,
+                      ),
                       Row(
+
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: provider.tabs
                             .asMap()
@@ -71,12 +75,19 @@ class _ChatListPage extends State<ChatListPage> {
                                             .grey, // 활성화된 탭은 검은색, 비활성화된 탭은 회색
                                   ),
                                 ),
+
                               ),
                             )
+
                             .toList(),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.only(top: 5),
+                        child: Container(),
+                      ),
+                      Container(color: Colors.grey, height: 0.5,),
+                      Padding(
+                        padding: EdgeInsets.only(top: 15),
                         child: Container(),
                       ),
                       Expanded(
@@ -91,88 +102,90 @@ class _ChatListPage extends State<ChatListPage> {
                             } else {
                               return Padding(
                                 padding: const EdgeInsets.all(0.5),
-                                child: Container(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // Navigator.of(context).push(
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //           ()),
-                                      // );
-                                    },
-                                    child: CardComponent(
-                                      child: Row(
-                                        children: [
-                                          Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Icon(Icons.chat_bubble),
+                                child: Center(
+                                  child: Container(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Navigator.of(context).push(
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           ()),
+                                        // );
+                                      },
+                                      child: CardComponent(
+                                        child: Row(
+                                          children: [
+                                            Center(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(Icons.chat_bubble),
+                                              ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      provider
-                                                              .chatDtoList[
-                                                                  index]
-                                                              .chatCtgr ??
-                                                          '',
-                                                      style: TextStyle(
-                                                          fontSize: 13),
-                                                    ),
-                                                    Spacer(),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8),
-                                                      child: Text(
-                                                        'AI ${provider.chatDtoList[index].aIRole}' ??
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        provider
+                                                                .chatDtoList[
+                                                                    index]
+                                                                .chatCtgr ??
                                                             '',
                                                         style: TextStyle(
-                                                            fontSize: 10,
-                                                            color: Colors.grey),
+                                                            fontSize: 13),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  provider.chatDtoList[index]
-                                                          .chatNm ??
-                                                      '',
-                                                  style:
-                                                      TextStyle(fontSize: 13),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8),
-                                                      child: Text(
-                                                        '나 ${provider.chatDtoList[index].usrRole}' ??
-                                                            '',
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color: Colors.grey),
+                                                      Spacer(),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                right: 8),
+                                                        child: Text(
+                                                          'AI ${provider.chatDtoList[index].aIRole}' ??
+                                                              '',
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              color: Colors.grey),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    provider.chatDtoList[index]
+                                                            .chatNm ??
+                                                        '',
+                                                    style:
+                                                        TextStyle(fontSize: 13),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                right: 8),
+                                                        child: Text(
+                                                          '나 ${provider.chatDtoList[index].usrRole}' ??
+                                                              '',
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              color: Colors.grey),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
