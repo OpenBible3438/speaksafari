@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -35,12 +36,32 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Welcome",
+                    SizedBox(
+                      width: 250.0,
+                      child: DefaultTextStyle(
                         style: AppTypo(
                                 typo: const SoyoMaple(),
                                 fontColor: Colors.black,
                                 fontWeight: FontWeight.w600)
-                            .headline1),
+                            .headline3,
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            TypewriterAnimatedText('안녕하세요, 환영합니다.'),
+                            TypewriterAnimatedText('스픽사파리와 함께'),
+                            TypewriterAnimatedText('영어 공부하세요'),
+                          ],
+                          onTap: () {
+                            print("Tap Event");
+                          },
+                        ),
+                      ),
+                    ),
+                    // Text("Welcome",
+                    //     style: AppTypo(
+                    //             typo: const SoyoMaple(),
+                    //             fontColor: Colors.black,
+                    //             fontWeight: FontWeight.w600)
+                    //         .headline1),
                     const SizedBox(height: 100),
                     IconButton(
                       onPressed: () {},

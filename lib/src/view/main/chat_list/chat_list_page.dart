@@ -5,6 +5,7 @@ import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/util/route_path.dart';
 
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
@@ -37,7 +38,9 @@ class _ChatListPage extends State<ChatListPage> {
             builder: (context, provider, child) => Scaffold(
                   backgroundColor: Color.fromARGB(255, 248, 248, 248),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutePath.newchat);
+                    },
                     child: Icon(
                       Icons.edit,
                       color: Colors.white,
