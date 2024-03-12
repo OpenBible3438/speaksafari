@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
 import 'package:speak_safari/src/view/base/base_view_model.dart';
+
+
 
 class ChatListViewModel extends BaseViewModel {
   ChatListViewModel({
@@ -42,49 +45,85 @@ class ChatListViewModel extends BaseViewModel {
     }
   }
 
-  void generateMockData(int count) {
-    List<ChatDto> mockDataList = [];
-
-    // 무작위로 선택할 값들의 목록
-    List<String> chatNames = [
-      '공항 입국심사에서 인터뷰',
-      '제과점에서 계산하기',
-      '서울 코엑스에서 행인에게 길물어보기',
-      '고객센터에 버스정류장 분실물 신고',
-      '편의점'
+  void generateMockData() {
+    List<ChatDto> mockDataList = [
+      ChatDto(
+        chatNm: '공항 입국심사에서 인터뷰',
+        chatCtt: 'Content 1',
+        aIRole: '입국심사관',
+        usrRole: '입국여행자',
+        chatCtgr: 'topics',
+      ),
+      ChatDto(
+        chatNm: '제과점에서 계산하기',
+        chatCtt: 'Content 2',
+        aIRole: 'AI Role 2',
+        usrRole: 'User Role 2',
+        chatCtgr: 'topics',
+      ),
+      ChatDto(
+        chatNm: '서울 코엑스에서 행인에게 길물어보기',
+        chatCtt: 'Content 3',
+        aIRole: 'AI Role 3',
+        usrRole: 'User Role 3',
+        chatCtgr: 'topics',
+      ),
+      ChatDto(
+        chatNm: '고객센터에 버스정류장 분실물 신고',
+        chatCtt: 'Content 4',
+        aIRole: 'AI Role 1',
+        usrRole: 'User Role 2',
+        chatCtgr: 'topics',
+      ),
+      ChatDto(
+        chatNm: '편의점',
+        chatCtt: 'Content 5',
+        aIRole: 'AI Role 2',
+        usrRole: 'User Role 3',
+        chatCtgr: 'topics',
+      ),
+      // 나머지 ChatDto 5개를 여기에 추가해주세요
     ];
-    List<String> chatContents = [
-      'Content 1',
-      'Content 2',
-      'Content 3',
-      'Content 4',
-      'Content 5',
-    ];
-    List<String> aiRoles = ['AI Role 1', 'AI Role 2', 'AI Role 3'];
-    List<String> usrRoles = ['User Role 1', 'User Role 2', 'User Role 3'];
-    List<String> chatCategories = ['topics', 'custom'];
 
-    Random random = Random();
 
-    for (int i = 0; i < count; i++) {
-      ChatDto chatDto = ChatDto(
-        chatNm: chatNames[random.nextInt(chatNames.length)],
-        chatCtt: chatContents[random.nextInt(chatContents.length)],
-        aIRole: aiRoles[random.nextInt(aiRoles.length)],
-        usrRole: usrRoles[random.nextInt(usrRoles.length)],
-        chatCtgr: chatCategories[random.nextInt(chatCategories.length)],
-      );
-      mockDataList.add(chatDto);
-    }
 
-    for (ChatDto item in mockDataList) {
-      if (item.chatCtgr == 'custom') {
-        cusTomChatList.add(item);
-      } else if (item.chatCtgr == 'topics') {
-        topicsChatList.add(item);
-      }
-    }
+        topicsChatList = mockDataList;
+
   }
+
+
+
+  Future<List<ChatDto>> fromFirestore() async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    // _firestore.collection("chat").doc("123456789").set(
+    //   {
+    //     "brand": "Genesis",
+    //     "name": "G70",
+    //     "price": 5000,
+    //   },);
+
+    QuerySnapshot<Map<String, dynamic>> _snapshot =
+    await _firestore.collection("chat").get();
+
+    _snapshot.docs.forEach((doc) {
+      print(doc.data());
+    });
+
+    print('asdf');
+    print(_snapshot);
+    List<ChatDto> _result =
+    _snapshot.docs.map((e) => ChatDto.fromJson(e.data())).toList();
+    print(_result);
+    cusTomChatList = _result;
+
+    notifyListeners();
+
+    return _result;
+  }
+
+
+
 }
 
 class ChatDto {
@@ -96,6 +135,17 @@ class ChatDto {
 
   ChatDto(
       {this.chatNm, this.chatCtt, this.aIRole, this.usrRole, this.chatCtgr});
+
+  factory ChatDto.fromJson(Map<String, dynamic> json) {
+    return ChatDto(
+      chatNm: json['chat_nm'],
+      chatCtt: json['chat_ctt'],
+      aIRole: json['ai_role'],
+      usrRole: json['usr_role'],
+      chatCtgr: json['chat_ctgr'],
+    );
+  }
+
 }
 
 class TabInfo {

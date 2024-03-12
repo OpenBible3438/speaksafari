@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
@@ -49,8 +51,10 @@ class _WordQuizPageState extends State<WordQuizPage> {
   }
 
   void reloadData() {
-    setState(() {
-      getWordQuizFuture = getWordQuiz();
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        getWordQuizFuture = getWordQuiz();
+      });
     });
   }
 
@@ -64,6 +68,156 @@ class _WordQuizPageState extends State<WordQuizPage> {
       }
       _counter++;
     });
+  }
+
+  // 영어 예문 공백 처리
+  TextSpan addBlankInExample(String exampleString, String word) {
+    const TextStyle textStyle =
+        TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'soyo_maple');
+    const TextStyle highlightStyle = TextStyle(
+      fontSize: 18,
+      color: Colors.yellow,
+      backgroundColor: Colors.yellow, // 배경색 적용
+    );
+
+    List<TextSpan> spans = [];
+    try {
+      String lowerExampleString = exampleString.toLowerCase();
+      String lowerWord = word.toLowerCase();
+
+      int index = lowerExampleString.indexOf(lowerWord);
+      int lastIndex = index + word.length - 1;
+
+      String frontString = exampleString.substring(0, index);
+      String backString =
+          exampleString.substring(lastIndex + 1, exampleString.length);
+
+      spans.add(TextSpan(text: frontString, style: textStyle));
+      spans.add(TextSpan(text: word, style: highlightStyle));
+      spans.add(TextSpan(text: backString, style: textStyle));
+    } catch (e) {
+      debugPrint('Fail to addBlankInExample $e');
+      debugPrint('reloadData');
+      reloadData();
+    }
+    return TextSpan(children: spans);
+  }
+
+  // 정답 버튼 랜덤 섞기
+  List<Widget> getButtons(String button1, String button2, String button3) {
+    List<Widget> shuffledButtons = [
+      createButton(button1, button1, true),
+      createButton(button2, button1, false),
+      createButton(button3, button1, false)
+    ];
+    shuffledButtons.shuffle(Random());
+
+    List<Widget> buttonsWithSpaces = [];
+    for (int i = 0; i < shuffledButtons.length; i++) {
+      buttonsWithSpaces.add(shuffledButtons[i]);
+      if (i < shuffledButtons.length - 1) {
+        buttonsWithSpaces.add(const SizedBox(height: 10));
+      }
+    }
+    return buttonsWithSpaces;
+  }
+
+  // 버튼 생성
+  Widget createButton(
+      String buttonString, String correctString, bool isCorrect) {
+    return Button(
+        text: buttonString,
+        backgroundColor: context.color.tertiary,
+        width: MediaQuery.of(context).size.width * 0.8,
+        onPressed: () {
+          showOverlay(context, true);
+          _quizCounter();
+          if (isCorrect) {
+            // 정답 BottomSheet
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.green.withOpacity(0.5),
+              builder: (BuildContext context) {
+                return Container(
+                  margin: const EdgeInsets.all(20),
+                  height: 130,
+                  child: Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.check_circle_outline),
+                          Text(
+                            '정답!',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Button(
+                        text: '계속하기',
+                        width: MediaQuery.of(context).size.width,
+                        backgroundColor: Colors.green,
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _overlayEntry?.remove();
+                          reloadData();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+              isDismissible: false,
+            );
+          } else {
+            // 오답 BottomSheet
+            showModalBottomSheet(
+              backgroundColor: Colors.red.withOpacity(0.5),
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  margin: const EdgeInsets.all(20),
+                  height: 150,
+                  child: Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.cancel_outlined),
+                          Text(
+                            '오답',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Answer : $correctString',
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Button(
+                        text: '계속하기',
+                        width: MediaQuery.of(context).size.width,
+                        backgroundColor: Colors.red,
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _overlayEntry?.remove();
+                          reloadData();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+        });
   }
 
   // 정답 & 오답 이미지 설정
@@ -110,16 +264,26 @@ class _WordQuizPageState extends State<WordQuizPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('API ERROR'),
                   ElevatedButton(
                     onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                    child: const Text('데이터 재시도'),
+                    child: const Text('재시도'),
                   ),
                 ],
               ),
             );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error : ${snapshot.error}'));
+            debugPrint('Error : ${snapshot.error}');
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+                    child: const Text('재시도'),
+                  ),
+                ],
+              ),
+            );
           } else {
             return SafeArea(
               child: Column(
@@ -143,20 +307,8 @@ class _WordQuizPageState extends State<WordQuizPage> {
                                 color: Colors.black,
                               ),
                               children: [
-                                TextSpan(text: snapshot.data![1]),
-                                WidgetSpan(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.yellow,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Text(
-                                      '        공백처리             ',
-                                      style: TextStyle(
-                                          backgroundColor: Colors.transparent),
-                                    ),
-                                  ),
-                                ),
+                                addBlankInExample(
+                                    snapshot.data![1], snapshot.data![0]),
                               ],
                             ),
                           ),
@@ -164,8 +316,9 @@ class _WordQuizPageState extends State<WordQuizPage> {
                         Text(
                           snapshot.data![2],
                           style: const TextStyle(
-                            fontSize: 15,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'soyo_maple',
                           ),
                         ),
                         const Spacer(),
@@ -174,136 +327,8 @@ class _WordQuizPageState extends State<WordQuizPage> {
                   ),
                   const SizedBox(height: 20),
                   Column(
-                    children: [
-                      Button(
-                        text: snapshot.data![0],
-                        backgroundColor: context.color.tertiary,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        onPressed: () {
-                          showOverlay(context, true);
-                          _quizCounter();
-
-                          // 정답 BottomSheet
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.green.withOpacity(0.5),
-                            builder: (BuildContext context) {
-                              return Container(
-                                margin: const EdgeInsets.all(20),
-                                height: 130,
-                                child: Column(
-                                  children: [
-                                    const Row(
-                                      children: [
-                                        Icon(Icons.check_circle_outline),
-                                        Text(
-                                          '정답!',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                        // const Spacer(),
-                                        // IconButton(
-                                        //   onPressed: () {
-                                        //     Navigator.pop(context);
-                                        //     _overlayEntry?.remove();
-                                        //   },
-                                        //   icon: const Icon(Icons.close),
-                                        // ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Button(
-                                      text: '계속하기',
-                                      width: MediaQuery.of(context).size.width,
-                                      backgroundColor: Colors.green,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        _overlayEntry?.remove();
-                                        setState(() {
-                                          getWordQuizFuture = getWordQuiz();
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            isDismissible: false,
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      Button(
-                        text: snapshot.data![3],
-                        backgroundColor: context.color.tertiary,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        onPressed: () {
-                          showOverlay(context, false);
-                          _quizCounter();
-
-                          // 오답 BottomSheet
-                          showModalBottomSheet(
-                            backgroundColor: Colors.red.withOpacity(0.5),
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                margin: const EdgeInsets.all(20),
-                                height: 150,
-                                child: Column(
-                                  children: [
-                                    const Row(
-                                      children: [
-                                        Icon(Icons.cancel_outlined),
-                                        Text(
-                                          '오답',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                        // const Spacer(),
-                                        // IconButton(
-                                        //   onPressed: () {
-                                        //     Navigator.pop(context);
-                                        //     _overlayEntry?.remove();
-                                        //   },
-                                        //   icon: const Icon(Icons.close),
-                                        // ),
-                                      ],
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Answer : close call',
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Button(
-                                      text: '계속하기',
-                                      width: MediaQuery.of(context).size.width,
-                                      backgroundColor: Colors.red,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        _overlayEntry?.remove();
-                                        reloadData();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      Button(
-                        text: snapshot.data![4],
-                        backgroundColor: context.color.tertiary,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        onPressed: () {},
-                      ),
-                    ],
+                    children: getButtons(snapshot.data![0], snapshot.data![3],
+                        snapshot.data![4]),
                   ),
                 ],
               ),
@@ -315,8 +340,10 @@ class _WordQuizPageState extends State<WordQuizPage> {
   }
 }
 
+// AI 반환 String To List
 List<String> splitResponseIntoList(String response) {
   response = response.replaceAll('*', '');
+  response = response.replaceAll('예문', '');
 
   var regex = RegExp(r'\d+\.\s*\**');
   var matches = regex.allMatches(response);
@@ -337,6 +364,11 @@ List<String> splitResponseIntoList(String response) {
   if (previousMatchEnd != 0 && previousMatchEnd < response.length) {
     parts.add(response.substring(previousMatchEnd).trim());
   }
+
+  // 영어 이외 문자 제거
+  parts[0] = parts[0].replaceAll(RegExp(r'[^A-Za-z\s]'), '');
+  parts[3] = parts[3].replaceAll(RegExp(r'[^A-Za-z\s]'), '');
+  parts[4] = parts[4].replaceAll(RegExp(r'[^A-Za-z\s]'), '');
 
   return parts;
 }
