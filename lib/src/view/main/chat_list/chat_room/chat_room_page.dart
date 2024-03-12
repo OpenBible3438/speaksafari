@@ -53,6 +53,7 @@ class _ChatroomState extends State<ChatRoomPage> {
 
   double isInterval = 0.0;
   double _currentSliderValue = 0.5;
+
   late final GenerativeModel _model;
   late final ChatSession _chatSession;
 
@@ -64,13 +65,15 @@ class _ChatroomState extends State<ChatRoomPage> {
     tts.setSpeechRate(_currentSliderValue);
     tts.setLanguage("en");
     // en-US
-    _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey, );
+    _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey, generationConfig: GenerationConfig(
+      topK: 1,
+      topP: 10
 
-
+    ) );
 
 
     _chatSession = _model.startChat();
-    sendfirstMessage();
+    _sendMessage("hello");
   }
 
   void setSpeechRate(double ma) {
@@ -112,47 +115,43 @@ class _ChatroomState extends State<ChatRoomPage> {
                   children: [
                     ListView.builder(
                       itemBuilder: ((context, index) {
-
                         final content = _chatSession.history.toList()[index];
                         final text = content.parts
                             .whereType<TextPart>()
-                            .map((part) => part.text)
-                            .join();
-
-                        String jsonString = text;
-                        print(jsonString);
-                        String chatContent = "";
-                        if (jsonString.startsWith('{')) {
-                          Map<String, dynamic> jsonResponse = json.decode(jsonString);
-                          chatContent = jsonResponse['chat_content'];
-
-                        } else {
-                          chatContent = text;
-                        }
-
-                        // final fs = _model.generateContentStream(
-                        //     _chatSession.history.toList(),
-                        // );
-                        //
-                        // print("------------------------");
-                        // fs.map((event) =>
-                        //     print("text 확인 ${event.text}")
-                        // );
-                        // print("------------------------");
+                            .map((part)
+                        {
+                          print(
+                              "---------------d-----------------------------------------");
 
 
-                        return InkWell(
-                          onTap: (){
-                              tts.speak(chatContent);
-                          },
-                          child: ChatMessageWidget(
-                              message: chatContent,
+                            var jsonString = part.text;
+
+
+                            if(index % 2 == 1) {
+                              Map<String, dynamic> user = jsonDecode(jsonString);
+                              return user['chat_content'];
+                            } else {
+                              var first = jsonString.substring(jsonString.indexOf('{') - 1, jsonString.indexOf('}') + 1);
+                              Map<String, dynamic> user = jsonDecode(first);
+                              return user['user_chat_content'];
+                            }
+
+
+                          // return firstString;
+                          }
+                        ) .join();
+
+                          return InkWell(
+                            onTap: () {
+                              tts.speak(text);
+                            },
+                            child: ChatMessageWidget(
+                              message: text,
                               isUserMessage: content.role == 'user',
-                          ),
-                        );
+                            ),
+                          );
 
-                      }
-                      ),
+                      }),
                       itemCount: _chatSession.history.length,
                       controller: _scrollController,
                     ),
@@ -327,7 +326,8 @@ class _ChatroomState extends State<ChatRoomPage> {
                                           ),
                                         ),
                                         if(isRepeat && !isSpeechRateSetting && !isIntervalOpen)
-                                          IconButton.filled(
+                                          IconButton
+                                              .filled(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all(Colors.green),
                                               iconColor: MaterialStateProperty.all(Colors.white),
@@ -448,64 +448,6 @@ class _ChatroomState extends State<ChatRoomPage> {
 
 
 
-  Future<void> sendfirstMessage() async {
-
-    //     '유효한 필드는 채팅 시간, 대화 내용, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
-    //         ' 입력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-    // '(2013/10/11 09:00)", "chat_content": "여권을 분실했어요", "ai_role" : "입국 심사관", "user_role" : "여행자", "chat_trans" : "번역 내용"}.'
-    //
-    //         '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-    //         '(2013/10/11 09:00)", "chat_content": "(너가 할말을 영어로)", "ai_role" : "입국 심사관", "user_role" : "여행자", "chat_trans" : "번역 내용"}.'
-    //     '   상황극: 여행자가 입국하기 위해 입국 심사관과 대화하는 장면이고 너는 입국 심사원인데 '
-    //     '"chat_content"'
-    //     ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'
-    var sendMs = Content.text(
-
-        '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
-            '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-            '(2013/10/11 09:00)","user_chat_content" : "hello", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.ai_role}", "user_role" : "${widget.chatDto?.user_role}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chat_content} '
-            '"user_chat_content"'
-            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 chat_content 에 출력하고 Json 형태로 보내줘출력:'
-    );
-
-
-    final response = await _chatSession.sendMessage(sendMs);
-    String? s = response.text ?? "";
-
-    try {
-      Map<String, dynamic> decodedJson = json.decode(s!);
-      ChatDto dto = ChatDto.fromJson(decodedJson);
-      print(dto.chat_content);
-    } catch (e) {
-      print('오류: $e');
-    }
-
-    setState(() {
-      isLoading = true;
-      //chatbotHistory.add(sendMs.toString());
-      _textController.clear();
-    });
-
-    _scrollToBottom();
-    _focusNode.requestFocus();
-
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        isLoading = false;
-        chatbotHistory.add('I am a chatbot');
-      });
-
-      _scrollToBottom();
-      _focusNode.requestFocus();
-    });
-
-
-  }
-
-
-
-
   Future<void> _sendMessage(String value) async {
     if (value.isEmpty) {
       return;
@@ -520,11 +462,13 @@ class _ChatroomState extends State<ChatRoomPage> {
     final response = await _chatSession.sendMessage(Content.text(
         '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
             '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.ai_role}", "user_role" : "${widget.chatDto?.user_role}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chat_content} '
+            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chatNm} '
             '"user_chat_content"'
             ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'
-    ));
+      )
+    );
+
 
     setState(() {
       isLoading = false;
