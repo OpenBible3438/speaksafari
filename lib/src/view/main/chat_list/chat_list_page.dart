@@ -149,11 +149,7 @@ class _ChatListPage extends State<ChatListPage> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    provider
-                                                        .chatDtoList[
-                                                    index]
-                                                        .chatCtgr ??
-                                                        '',
+                                                    'category',
                                                     style: TextStyle(
                                                         fontSize: 13),
                                                   ),
@@ -163,7 +159,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      'AI ${provider.chatDtoList[index].aIRole}' ??
+                                                      'AI ${provider.chatDtoList[index].ai_role}' ??
                                                           '',
                                                       style: TextStyle(
                                                           fontSize: 10,
@@ -174,7 +170,7 @@ class _ChatListPage extends State<ChatListPage> {
                                               ),
                                               Text(
                                                 provider.chatDtoList[index]
-                                                    .chatNm ??
+                                                    .chat_content ??
                                                     '',
                                                 style:
                                                 TextStyle(fontSize: 13),
@@ -188,7 +184,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      '나 ${provider.chatDtoList[index].usrRole}' ??
+                                                      '나 ${provider.chatDtoList[index].user_role}' ??
                                                           '',
                                                       style: TextStyle(
                                                           fontSize: 10,

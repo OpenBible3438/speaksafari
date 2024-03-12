@@ -48,40 +48,69 @@ class ChatListViewModel extends BaseViewModel {
   void generateMockData() {
     List<ChatDto> mockDataList = [
       ChatDto(
-        chatNm: '공항 입국심사에서 인터뷰',
-        chatCtt: 'Content 1',
-        aIRole: '입국심사관',
-        usrRole: '입국여행자',
-        chatCtgr: 'topics',
+        // chat_: '공항 입국심사에서 인터뷰',
+        chat_content: '공항 입국심사에서 인터뷰',
+        ai_role: '입국심사관',
+        user_role: '입국여행자',
+        // chatCtgr: 'topics',
       ),
       ChatDto(
-        chatNm: '제과점에서 계산하기',
-        chatCtt: 'Content 2',
-        aIRole: 'AI Role 2',
-        usrRole: 'User Role 2',
-        chatCtgr: 'topics',
+        // chat_: '공항 입국심사에서 인터뷰',
+        chat_content: '공항 입국심사에서 인터뷰',
+        ai_role: '입국심사관',
+        user_role: '입국여행자',
+        // chatCtgr: 'topics',
       ),
       ChatDto(
-        chatNm: '서울 코엑스에서 행인에게 길물어보기',
-        chatCtt: 'Content 3',
-        aIRole: 'AI Role 3',
-        usrRole: 'User Role 3',
-        chatCtgr: 'topics',
+        // chat_: '공항 입국심사에서 인터뷰',
+        chat_content: '공항 입국심사에서 인터뷰',
+        ai_role: '입국심사관',
+        user_role: '입국여행자',
+        // chatCtgr: 'topics',
       ),
       ChatDto(
-        chatNm: '고객센터에 버스정류장 분실물 신고',
-        chatCtt: 'Content 4',
-        aIRole: 'AI Role 1',
-        usrRole: 'User Role 2',
-        chatCtgr: 'topics',
+        // chat_: '공항 입국심사에서 인터뷰',
+        chat_content: '공항 입국심사에서 인터뷰',
+        ai_role: '입국심사관',
+        user_role: '입국여행자',
+        // chatCtgr: 'topics',
       ),
       ChatDto(
-        chatNm: '편의점',
-        chatCtt: 'Content 5',
-        aIRole: 'AI Role 2',
-        usrRole: 'User Role 3',
-        chatCtgr: 'topics',
-      ),
+        // chat_: '공항 입국심사에서 인터뷰',
+        chat_content: '공항 입국심사에서 인터뷰',
+        ai_role: '입국심사관',
+        user_role: '입국여행자',
+        // chatCtgr: 'topics',
+      )
+      // ),
+      // ChatDto(
+      //   chatNm: '제과점에서 계산하기',
+      //   chatCtt: 'Content 2',
+      //   aIRole: 'AI Role 2',
+      //   usrRole: 'User Role 2',
+      //   chatCtgr: 'topics',
+      // ),
+      // ChatDto(
+      //   chatNm: '서울 코엑스에서 행인에게 길물어보기',
+      //   chatCtt: 'Content 3',
+      //   aIRole: 'AI Role 3',
+      //   usrRole: 'User Role 3',
+      //   chatCtgr: 'topics',
+      // ),
+      // ChatDto(
+      //   chatNm: '고객센터에 버스정류장 분실물 신고',
+      //   chatCtt: 'Content 4',
+      //   aIRole: 'AI Role 1',
+      //   usrRole: 'User Role 2',
+      //   chatCtgr: 'topics',
+      // ),
+      // ChatDto(
+      //   chatNm: '편의점',
+      //   chatCtt: 'Content 5',
+      //   aIRole: 'AI Role 2',
+      //   usrRole: 'User Role 3',
+      //   chatCtgr: 'topics',
+      // ),
       // 나머지 ChatDto 5개를 여기에 추가해주세요
     ];
 
@@ -96,6 +125,7 @@ class ChatListViewModel extends BaseViewModel {
   Future<List<ChatDto>> fromFirestore() async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+    /// 대화내역 저장
     // _firestore.collection("chat").doc("123456789").set(
     //   {
     //     "brand": "Genesis",
@@ -103,6 +133,7 @@ class ChatListViewModel extends BaseViewModel {
     //     "price": 5000,
     //   },);
 
+    /// 대화내역 몽땅 불러오기
     QuerySnapshot<Map<String, dynamic>> _snapshot =
     await _firestore.collection("chat").get();
 
@@ -110,7 +141,6 @@ class ChatListViewModel extends BaseViewModel {
       print(doc.data());
     });
 
-    print('asdf');
     print(_snapshot);
     List<ChatDto> _result =
     _snapshot.docs.map((e) => ChatDto.fromJson(e.data())).toList();
@@ -127,22 +157,24 @@ class ChatListViewModel extends BaseViewModel {
 }
 
 class ChatDto {
-  String? chatNm;
-  String? chatCtt;
-  String? aIRole;
-  String? usrRole;
-  String? chatCtgr;
+  String? chat_time;
+  String? user_chat_content;
+  String? chat_content;
+  String? ai_role;
+  String? user_role;
+  String? chat_trans;
 
   ChatDto(
-      {this.chatNm, this.chatCtt, this.aIRole, this.usrRole, this.chatCtgr});
+      {this.chat_time, this.user_chat_content, this.chat_content, this.ai_role, this.user_role, this.chat_trans});
 
   factory ChatDto.fromJson(Map<String, dynamic> json) {
     return ChatDto(
-      chatNm: json['chat_nm'],
-      chatCtt: json['chat_ctt'],
-      aIRole: json['ai_role'],
-      usrRole: json['usr_role'],
-      chatCtgr: json['chat_ctgr'],
+      chat_time: json['user_chat_content'],
+      user_chat_content: json['user_chat_content'],
+      chat_content: json['chat_content'],
+      ai_role: json['ai_role'],
+      user_role: json['user_role'],
+      chat_trans: json['chat_trans'],
     );
   }
 
