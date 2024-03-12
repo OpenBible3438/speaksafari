@@ -19,14 +19,14 @@ class ChatMessageWidget extends StatelessWidget {
         Container(
             constraints: BoxConstraints(maxWidth: size.width * 0.7),
             decoration: BoxDecoration(
-              color: isUserMessage ? context.color.primary : Colors.grey,
+              color: isUserMessage ? context.color.primary : Color.fromRGBO(215, 215, 215, 1.0),
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child:
-            // MarkdownBody(data: message, selectable: true,)),
-        Text("$message", style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black).body1,)),
+            MarkdownBody(data: message, selectable: true,)),
+        // Text("$message", style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black).body1,)),
       ],
     );
   }
