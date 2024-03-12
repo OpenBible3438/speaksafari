@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
+import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_message_widget.dart';
 
 class ChatRoomPage extends StatefulWidget {
-  const ChatRoomPage({super.key});
+  const ChatRoomPage({super.key, this.chatDto});
+
+   final ChatDto? chatDto;
 
   @override
   State<ChatRoomPage> createState() => _ChatroomState();
 }
 
+/// 스피킹 목록, 새로운 커스텀 대화, 토픽에서 진입
+/// ChatDTO를 외부로부터 받는다(프롬프트 상황 설정 데이터)
+/// 기존 대화내역도 받을 때가 있다(파이어베이스 조회)
+/// 기존 대화내역이 있다면 이것도 제미나이한테 보낸다
+/// 대화가 끝날때마다 파이어스토어에 저장한다
 class _ChatroomState extends State<ChatRoomPage> {
   List<String> chatbotHistory = [
     'Hi there!',
@@ -54,8 +62,13 @@ class _ChatroomState extends State<ChatRoomPage> {
     tts.setSpeechRate(_currentSliderValue);
     tts.setLanguage("en");
     // en-US
-    _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey);
+    _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey, );
+
+
+
+
     _chatSession = _model.startChat();
+    sendfirstMessage();
   }
 
   void setSpeechRate(double ma) {
@@ -102,6 +115,17 @@ class _ChatroomState extends State<ChatRoomPage> {
                             .whereType<TextPart>()
                             .map((part) => part.text)
                             .join();
+
+                        final fs = _model.generateContentStream(
+                            _chatSession.history.toList(),
+                        );
+
+                        print("------------------------");
+                        fs.map((event) =>
+                            print("text 확인 ${event.text}")
+                        );
+                        print("------------------------");
+
 
                         return InkWell(
                           onTap: (){
@@ -408,6 +432,56 @@ class _ChatroomState extends State<ChatRoomPage> {
 
 
 
+  Future<void> sendfirstMessage() async {
+
+    //     '유효한 필드는 채팅 시간, 대화 내용, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
+    //         ' 입력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
+    // '(2013/10/11 09:00)", "chat_content": "여권을 분실했어요", "ai_role" : "입국 심사관", "user_role" : "여행자", "chat_trans" : "번역 내용"}.'
+    //
+    //         '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
+    //         '(2013/10/11 09:00)", "chat_content": "(너가 할말을 영어로)", "ai_role" : "입국 심사관", "user_role" : "여행자", "chat_trans" : "번역 내용"}.'
+    //     '   상황극: 여행자가 입국하기 위해 입국 심사관과 대화하는 장면이고 너는 입국 심사원인데 '
+    //     '"chat_content"'
+    //     ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'
+    var sendMs = Content.text(
+
+        '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
+            '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
+            '(2013/10/11 09:00)","user_chat_content" : "hello", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chatNm} '
+            '"user_chat_content"'
+            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 chat_content 에 출력하고 Json 형태로 보내줘출력:'
+    );
+
+
+    final response = await _chatSession.sendMessage(sendMs);
+
+
+    setState(() {
+      isLoading = true;
+      chatbotHistory.add(sendMs.toString());
+      _textController.clear();
+    });
+
+    _scrollToBottom();
+    _focusNode.requestFocus();
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        isLoading = false;
+        chatbotHistory.add('I am a chatbot');
+      });
+
+      _scrollToBottom();
+      _focusNode.requestFocus();
+    });
+
+
+  }
+
+
+
+
   Future<void> _sendMessage(String value) async {
     if (value.isEmpty) {
       return;
@@ -419,7 +493,19 @@ class _ChatroomState extends State<ChatRoomPage> {
     });
     _scrollToBottom();
 
-    final response = await _chatSession.sendMessage(Content.text(value));
+    final response = await _chatSession.sendMessage(Content.text(
+
+
+        '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
+            '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
+            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chatNm} '
+            '"user_chat_content"'
+            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'
+
+
+
+    ));
 
 
     setState(() {

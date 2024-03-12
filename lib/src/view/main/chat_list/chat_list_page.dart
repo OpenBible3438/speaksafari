@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
+import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_room_page.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/util/route_path.dart';
 
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
@@ -18,6 +20,7 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPage extends State<ChatListPage> {
   int currentPage = 1;
 
+  /// 파이어베이스에서 채팅방 목록 불러오기
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -60,6 +63,7 @@ class _ChatListPage extends State<ChatListPage> {
                           (entry) => GestureDetector(
                         onTap: () {
                           provider.selectTab(entry.key);
+
                         },
                         child: Text(
                           entry.value.title,
@@ -116,6 +120,12 @@ class _ChatListPage extends State<ChatListPage> {
                               child: Container(
                                 child: GestureDetector(
                                   onTap: () {
+                                Navigator
+                                    .pushNamed(
+                                  context,
+                                  RoutePath.chatroom,
+                                  arguments: provider.chatDtoList[index]
+                                );
                                 provider.fromFirestore();
                                   },
                                   child: CardComponent(
