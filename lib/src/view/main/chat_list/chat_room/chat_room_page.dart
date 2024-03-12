@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -110,33 +112,47 @@ class _ChatroomState extends State<ChatRoomPage> {
                   children: [
                     ListView.builder(
                       itemBuilder: ((context, index) {
+
                         final content = _chatSession.history.toList()[index];
                         final text = content.parts
                             .whereType<TextPart>()
                             .map((part) => part.text)
                             .join();
 
-                        final fs = _model.generateContentStream(
-                            _chatSession.history.toList(),
-                        );
+                        String jsonString = text;
+                        print(jsonString);
+                        String chatContent = "";
+                        if (jsonString.startsWith('{')) {
+                          Map<String, dynamic> jsonResponse = json.decode(jsonString);
+                          chatContent = jsonResponse['chat_content'];
 
-                        print("------------------------");
-                        fs.map((event) =>
-                            print("text 확인 ${event.text}")
-                        );
-                        print("------------------------");
+                        } else {
+                          chatContent = text;
+                        }
+
+                        // final fs = _model.generateContentStream(
+                        //     _chatSession.history.toList(),
+                        // );
+                        //
+                        // print("------------------------");
+                        // fs.map((event) =>
+                        //     print("text 확인 ${event.text}")
+                        // );
+                        // print("------------------------");
 
 
                         return InkWell(
                           onTap: (){
-                              tts.speak(text);
+                              tts.speak(chatContent);
                           },
                           child: ChatMessageWidget(
-                              message: text,
+                              message: chatContent,
                               isUserMessage: content.role == 'user',
                           ),
                         );
-                      }),
+
+                      }
+                      ),
                       itemCount: _chatSession.history.length,
                       controller: _scrollController,
                     ),
@@ -447,19 +463,27 @@ class _ChatroomState extends State<ChatRoomPage> {
 
         '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
             '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-            '(2013/10/11 09:00)","user_chat_content" : "hello", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chatNm} '
+            '(2013/10/11 09:00)","user_chat_content" : "hello", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.ai_role}", "user_role" : "${widget.chatDto?.user_role}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chat_content} '
             '"user_chat_content"'
             ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 chat_content 에 출력하고 Json 형태로 보내줘출력:'
     );
 
 
     final response = await _chatSession.sendMessage(sendMs);
+    String? s = response.text ?? "";
 
+    try {
+      Map<String, dynamic> decodedJson = json.decode(s!);
+      ChatDto dto = ChatDto.fromJson(decodedJson);
+      print(dto.chat_content);
+    } catch (e) {
+      print('오류: $e');
+    }
 
     setState(() {
       isLoading = true;
-      chatbotHistory.add(sendMs.toString());
+      //chatbotHistory.add(sendMs.toString());
       _textController.clear();
     });
 
@@ -494,19 +518,13 @@ class _ChatroomState extends State<ChatRoomPage> {
     _scrollToBottom();
 
     final response = await _chatSession.sendMessage(Content.text(
-
-
         '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 , 너의 역할은 너는 입국 심사원, 나의 역할은 여행자, 번역 내용 은 한국어로 출력,'
             '출력 형태: {"chat_time": " 현재시간을 이러한 형태로 만들어서 넣어줘 '
-            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chatNm} '
+            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.ai_role}", "user_role" : "${widget.chatDto?.user_role}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chat_content} '
             '"user_chat_content"'
             ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'
-
-
-
     ));
-
 
     setState(() {
       isLoading = false;
