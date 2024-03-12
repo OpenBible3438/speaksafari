@@ -24,12 +24,13 @@ class _ChatListPage extends State<ChatListPage> {
         create: (context) {
           final provider =
           ChatListViewModel(chatListService: ChatListService());
-          provider.generateMockData(20);
+          provider.generateMockData();
+          provider.fromFirestore().then((_) {
           if (provider.tabs[0].isActive) {
             provider.chatDtoList = provider.cusTomChatList;
           } else {
             provider.chatDtoList = provider.topicsChatList;
-          }
+          }});
 
           return provider;
         },
@@ -90,27 +91,32 @@ class _ChatListPage extends State<ChatListPage> {
                     padding: EdgeInsets.only(top: 15),
                     child: Container(),
                   ),
+
                   Expanded(
-                    child: ListView.builder(
+
+                    child: provider.chatDtoList.isEmpty == true
+                        ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image( height: 200 ,image: AssetImage('assets/images/cutylion.png')),
+                          SizedBox(height: 15,),
+                          Text('스피킹 목록이 없습니다. 대화를 시작해 보세요!'),
+                        ],
+                      ),
+                    )
+                        :  ListView.builder(
                       shrinkWrap: true,
-                      itemCount: provider.chatDtoList.length + 1,
+                      itemCount: provider.chatDtoList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        if (index == provider.chatDtoList.length) {
-                          currentPage++;
-                          provider.getChatList(
-                              currentPage); // 스크롤 끝에 도달하면 새로운 아이템 로드
-                        } else {
+
                           return Padding(
                             padding: const EdgeInsets.all(0.5),
                             child: Center(
                               child: Container(
                                 child: GestureDetector(
                                   onTap: () {
-                                    // Navigator.of(context).push(
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           ()),
-                                    // );
+                                provider.fromFirestore();
                                   },
                                   child: CardComponent(
                                     child: Row(
@@ -192,7 +198,7 @@ class _ChatListPage extends State<ChatListPage> {
                             ),
                           );
                         }
-                      },
+
                     ),
                   ),
                 ],
