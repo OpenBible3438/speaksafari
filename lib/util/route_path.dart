@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speak_safari/src/view/login/login_page.dart';
+import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_room_page.dart';
 import 'package:speak_safari/src/view/main/chat_list/new_chat_page.dart';
 import 'package:speak_safari/src/view/main/main_page.dart';
@@ -21,7 +22,8 @@ abstract class RoutePath {
         page = const LoginPage();
         break;
       case RoutePath.chatroom:
-        page = const ChatRoomPage();
+        ChatDto chatDto = settings.arguments as ChatDto;
+        page =  ChatRoomPage(chatDto: chatDto,);
         break;
       case RoutePath.newchat:
         page = const NewChatPage();
