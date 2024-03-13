@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -24,26 +23,7 @@ class ChatRoomPage extends StatefulWidget {
   State<ChatRoomPage> createState() => _ChatroomState();
 }
 
-/// 스피킹 목록, 새로운 커스텀 대화, 토픽에서 진입
-/// ChatDTO를 외부로부터 받는다(프롬프트 상황 설정 데이터)
-/// 기존 대화내역도 받을 때가 있다(파이어베이스 조회)
-/// 기존 대화내역이 있다면 이것도 제미나이한테 보낸다
-/// 대화가 끝날때마다 파이어스토어에 저장한다
 class _ChatroomState extends State<ChatRoomPage> {
-  List<String> chatbotHistory = [
-    'Hi there!',
-    'How can I assist you today?',
-    'Sure, I can help with that!',
-    'Here is the information you requested.',
-    'Hi there!',
-    'How can I assist you today?',
-    'Sure, I can help with that!',
-    'Here is the information you requested.',
-    'Hi there!',
-    'How can I assist you today?',
-    'Sure, I can help with that!',
-    'Here is the information you requested.',
-  ];
   final FlutterTts tts = FlutterTts();
 
   final TextEditingController _textController = TextEditingController();
@@ -66,70 +46,72 @@ class _ChatroomState extends State<ChatRoomPage> {
 
   bool isChatSessionLoading = true;
 
-  List<MessageDto> myMessages = [];
-  List<MessageDto> aiMessages = [];
   List<MessageDto> allMessages = [];
 
-  static const _apiKey = const String.fromEnvironment("API_KEY");
+  static const _apiKey = 'AIzaSyA_rr7LwS88CpiYgSpPIAEqnWM3MwBZUmU';
 
   @override
   void initState() {
-    print("initState 시작");
     super.initState();
     tts.setSpeechRate(_currentSliderValue);
     tts.setLanguage("en");
 
-    // getMessages();
     getMessages().whenComplete(() {
       if (allMessages.isEmpty) {
-        _model = GenerativeModel(
-            model: "gemini-pro",
-            apiKey: _apiKey,
-            generationConfig: GenerationConfig(topK: 1, topP: 1));
-        _chatSession = _model.startChat();
-        _sendMessage("hello");
+        _startFirstChat();
       } else {
-        _model = GenerativeModel(
-            model: 'gemini-pro',
-            apiKey: _apiKey,
-            generationConfig: GenerationConfig(maxOutputTokens: 1000));
-        // Initialize the chat
-        List<Content> contents = [];
-
-        while (allMessages.isNotEmpty && allMessages.last.chatSpeaker == "me") {
-          allMessages.removeLast();
-        }
-
-        int currentIndex = 0;
-        while (currentIndex < allMessages.length - 1) {
-          if (allMessages[currentIndex].chatSpeaker == "me" &&
-              allMessages[currentIndex + 1].chatSpeaker == "me") {
-            allMessages.removeAt(currentIndex);
-          } else {
-            currentIndex++;
-          }
-        }
-
-        allMessages.forEach((element) {
-          if (element.chatSpeaker == "me") {
-            contents.add(Content.text(element.chatContent ?? "me의 오류 메세지"));
-          } else {
-            contents.add(Content.model([
-              TextPart(
-                  "${element.chatContent} \n한글 번역 : ${element.chatTrans}" ??
-                      "ai의 오류 메세지")
-            ]));
-          }
-        });
-
-        _chatSession = _model.startChat(history: contents);
+        _startContinuedChat();
       }
 
       setState(() {
         isChatSessionLoading = false;
       });
     });
-    print("initState 끝");
+  }
+
+  void _startFirstChat() {
+    _model = GenerativeModel(
+        model: "gemini-pro",
+        apiKey: _apiKey,
+        generationConfig: GenerationConfig(topK: 1, topP: 1));
+    _chatSession = _model.startChat();
+    _sendMessage("hello");
+  }
+
+  void _startContinuedChat() {
+    _model = GenerativeModel(
+        model: 'gemini-pro',
+        apiKey: _apiKey,
+        generationConfig: GenerationConfig(maxOutputTokens: 1000));
+    // Initialize the chat
+    List<Content> contents = [];
+
+    while (allMessages.isNotEmpty && allMessages.last.chatSpeaker == "me") {
+      allMessages.removeLast();
+    }
+
+    int currentIndex = 0;
+    while (currentIndex < allMessages.length - 1) {
+      if (allMessages[currentIndex].chatSpeaker == "me" &&
+          allMessages[currentIndex + 1].chatSpeaker == "me") {
+        allMessages.removeAt(currentIndex);
+      } else {
+        currentIndex++;
+      }
+    }
+
+    allMessages.forEach((element) {
+      if (element.chatSpeaker == "me") {
+        contents.add(Content.text(element.chatContent ?? "me의 오류 메세지"));
+      } else {
+        contents.add(Content.model([
+          TextPart("${element.chatContent} \n한글 번역 : ${element.chatTrans}" ??
+              "ai의 오류 메세지")
+        ]));
+      }
+    });
+
+    _chatSession = _model.startChat(history: contents);
   }
 
   void setSpeechRate(double ma) {
@@ -138,23 +120,17 @@ class _ChatroomState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build 시작");
-
     if (isChatSessionLoading == true) {
-      print("chat Session null");
-
       // _chatSession이 초기화되지 않은 경우 로딩 상태를 표시하거나 초기화를 기다립니다.
-      return CircularProgressIndicator();
+      return const CircularProgressIndicator();
     } else {
-      print("chat Session not null");
-
       return Scaffold(
         appBar: AppBar(
           title: AnimatedTextKit(
             animatedTexts: [
               ColorizeAnimatedText(
                 'Gemini',
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontFamily: "soyo_maple",
                   // The color must be set to white for this to work
                   color: Colors.white,
@@ -183,14 +159,14 @@ class _ChatroomState extends State<ChatRoomPage> {
                         final content = _chatSession.history.toList()[index];
                         var speakText = "";
                         final text =
-                        content.parts.whereType<TextPart>().map((part) {
+                            content.parts.whereType<TextPart>().map((part) {
                           var jsonString = part.text;
 
                           if (allMessages.isEmpty) {
                             //새로운 대화일때
                             if (index % 2 == 1) {
                               Map<String, dynamic> user =
-                              jsonDecode(jsonString);
+                                  jsonDecode(jsonString);
                               speakText = user['chat_content'];
                               return "${speakText} \n한글 번역 : ${user['chat_trans']}";
                             } else {
@@ -203,7 +179,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                           } else {
                             if (jsonString.startsWith('{')) {
                               Map<String, dynamic> user =
-                              jsonDecode(jsonString);
+                                  jsonDecode(jsonString);
                               speakText = user['chat_content'];
                               return "${speakText} \n한글 번역 : ${user['chat_trans']}";
                             } else if (jsonString.startsWith('유효한')) {
@@ -262,12 +238,12 @@ class _ChatroomState extends State<ChatRoomPage> {
                                     });
                                   },
                                   iconSize:
-                                  MediaQuery.of(context).size.width * 0.1,
+                                      MediaQuery.of(context).size.width * 0.1,
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         context.color.primary),
                                     iconColor:
-                                    MaterialStateProperty.all(Colors.green),
+                                        MaterialStateProperty.all(Colors.green),
                                   ),
                                   icon: const Icon(
                                     Icons.send_rounded,
@@ -279,7 +255,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                         ],
                       ),
                     if (isLoading && isFloating)
-                      LinearProgressIndicator(
+                      const LinearProgressIndicator(
                         color: Colors.blue,
                         backgroundColor: Colors.transparent,
                       ),
@@ -300,27 +276,11 @@ class _ChatroomState extends State<ChatRoomPage> {
                                 color: Colors.white,
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: const EdgeInsets.only(
+                                    left: 20, top: 10, bottom: 10, right: 10),
+                                // padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
-                                    IconButton.filled(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                        MaterialStateProperty.all(
-                                            Colors.white),
-                                        iconColor: MaterialStateProperty.all(
-                                            Colors.black),
-                                        elevation: MaterialStateProperty.all(5),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          isFloating = false;
-                                          isSetting = false;
-                                          isSpeechRateSetting = false;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.close),
-                                    ),
                                     if (!isSetting)
                                       Expanded(
                                         child: TextField(
@@ -335,62 +295,62 @@ class _ChatroomState extends State<ChatRoomPage> {
                                             filled: true,
                                             //<-- SEE HERE
                                             fillColor:
-                                            Colors.green.withAlpha(90),
+                                                Colors.green.withAlpha(90),
                                             //<-- SEE HERE
                                             suffixIcon: Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.green),
+                                                      MaterialStateProperty.all(
+                                                          Colors.green),
                                                   iconColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
                                                 ),
                                                 onPressed: isLoading
                                                     ? null
                                                     : () {
-                                                  if (!isLoading) {
-                                                    _sendMessage(
-                                                        _textController
-                                                            .text);
-                                                  }
-                                                },
+                                                        if (!isLoading) {
+                                                          _sendMessage(
+                                                              _textController
+                                                                  .text);
+                                                        }
+                                                      },
                                                 icon: const Icon(Icons.send),
                                               ),
                                             ),
                                             enabledBorder:
-                                            const OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(
-                                                        40.0)),
-                                                borderSide: BorderSide(
-                                                    color: Colors.white,
-                                                    style:
-                                                    BorderStyle.none)),
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
                                             disabledBorder:
-                                            const OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(
-                                                        40.0)),
-                                                borderSide: BorderSide(
-                                                    color: Colors.white,
-                                                    style:
-                                                    BorderStyle.none)),
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
                                             focusedBorder:
-                                            const OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(
-                                                        40.0)),
-                                                borderSide: BorderSide(
-                                                    color: Colors.white,
-                                                    style:
-                                                    BorderStyle.none)),
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
                                             border: const OutlineInputBorder(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(40.0)),
@@ -398,6 +358,8 @@ class _ChatroomState extends State<ChatRoomPage> {
                                                     color: Colors.white,
                                                     style: BorderStyle.none)),
                                             labelText: '메세지 입력',
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.never,
                                           ),
                                         ),
                                       ),
@@ -405,26 +367,26 @@ class _ChatroomState extends State<ChatRoomPage> {
                                       Expanded(
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             if (!isIntervalOpen)
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.green),
+                                                      MaterialStateProperty.all(
+                                                          Colors.green),
                                                   iconColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
                                                     if (isSpeechRateSetting) {
                                                       isSpeechRateSetting =
-                                                      false;
+                                                          false;
                                                     } else {
                                                       isSpeechRateSetting =
-                                                      true;
+                                                          true;
                                                     }
                                                   });
                                                 },
@@ -439,13 +401,13 @@ class _ChatroomState extends State<ChatRoomPage> {
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      isRepeat
-                                                          ? Colors.green
-                                                          : Colors.grey),
+                                                      MaterialStateProperty.all(
+                                                          isRepeat
+                                                              ? Colors.green
+                                                              : Colors.grey),
                                                   iconColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
                                                 ),
                                                 onPressed: () async {
                                                   setState(() {
@@ -464,13 +426,13 @@ class _ChatroomState extends State<ChatRoomPage> {
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      isIntervalOpen
-                                                          ? Colors.green
-                                                          : Colors.grey),
+                                                      MaterialStateProperty.all(
+                                                          isIntervalOpen
+                                                              ? Colors.green
+                                                              : Colors.grey),
                                                   iconColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
@@ -488,22 +450,22 @@ class _ChatroomState extends State<ChatRoomPage> {
                                             if (isIntervalOpen)
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceAround,
+                                                    MainAxisAlignment
+                                                        .spaceAround,
                                                 children: [
                                                   IconButton(
                                                     style: ButtonStyle(
                                                       backgroundColor:
-                                                      MaterialStateProperty
-                                                          .all(isInterval >
-                                                          1
-                                                          ? Colors.green
-                                                          : Colors
-                                                          .grey),
+                                                          MaterialStateProperty
+                                                              .all(isInterval >
+                                                                      1
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .grey),
                                                       iconColor:
-                                                      MaterialStateProperty
-                                                          .all(
-                                                          Colors.white),
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
                                                     ),
                                                     onPressed: () {
                                                       setState(() {
@@ -518,49 +480,49 @@ class _ChatroomState extends State<ChatRoomPage> {
                                                   Card(
                                                     shape: const ContinuousRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadiusDirectional.only(
-                                                            topEnd: Radius
-                                                                .circular(
-                                                                5),
-                                                            topStart: Radius
-                                                                .circular(
-                                                                5),
-                                                            bottomEnd: Radius
-                                                                .circular(
-                                                                5),
-                                                            bottomStart: Radius
-                                                                .circular(
-                                                                5))),
+                                                            BorderRadiusDirectional.only(
+                                                                topEnd: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                topStart: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                bottomEnd: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                bottomStart: Radius
+                                                                    .circular(
+                                                                        5))),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: Text("$isInterval",
                                                           style: AppTypo(
-                                                              typo:
-                                                              const SoyoMaple(),
-                                                              fontColor:
-                                                              Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600)
+                                                                  typo:
+                                                                      const SoyoMaple(),
+                                                                  fontColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)
                                                               .headline2),
                                                     ),
                                                   ),
                                                   IconButton(
                                                     style: ButtonStyle(
                                                       backgroundColor:
-                                                      MaterialStateProperty
-                                                          .all(isInterval <
-                                                          10
-                                                          ? Colors.green
-                                                          : Colors
-                                                          .grey),
+                                                          MaterialStateProperty
+                                                              .all(isInterval <
+                                                                      10
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .grey),
                                                       iconColor:
-                                                      MaterialStateProperty
-                                                          .all(
-                                                          Colors.white),
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
                                                     ),
                                                     onPressed: () {
                                                       setState(() {
@@ -673,7 +635,7 @@ class _ChatroomState extends State<ChatRoomPage> {
             }
           });
         },
-        icon: Icon(isSetting ? Icons.fast_forward : Icons.settings),
+        icon: Icon(isSetting ? Icons.close : Icons.settings),
       ),
     );
   }
@@ -697,11 +659,11 @@ class _ChatroomState extends State<ChatRoomPage> {
 
     final response = await _chatSession.sendMessage(Content.text(
         '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 ,상황은  ${widget.chatDto?.chatNm} 이고, 너의 역할은 "${widget.chatDto?.aIRole}", 나의 역할은 ${widget.chatDto?.usrRole}, 번역 내용 은 한국어로 출력,'
-            '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
-            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chatNm} '
-            '"user_chat_content"'
-            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
+        '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
+        '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+        '   상황극: ${widget.chatDto?.chatNm} '
+        '"user_chat_content"'
+        ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
 
     print("check error");
     print(response.text);
@@ -758,7 +720,6 @@ class _ChatroomState extends State<ChatRoomPage> {
   }
 
   Future<void> getMessages() async {
-    print("getMessages 시작각가가");
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     QuerySnapshot<Map<String, dynamic>> _snapshot = await _firestore
@@ -769,10 +730,6 @@ class _ChatroomState extends State<ChatRoomPage> {
     setState(() {
       allMessages =
           _snapshot.docs.map((e) => MessageDto.fromJson(e.data())).toList();
-      allMessages.forEach((doc) {
-        print(doc.chatContent);
-      });
     });
-    print("getMessages 끝");
   }
 }
