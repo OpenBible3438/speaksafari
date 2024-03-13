@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
+import 'package:speak_safari/src/view/main/word_quiz/word_quiz_view_model.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 
@@ -17,6 +18,8 @@ class WordQuizPage extends StatefulWidget {
 
 class _WordQuizPageState extends State<WordQuizPage> {
   late Future<List<String>>? getWordQuizFuture;
+  late WordQuizViewModel viewModel;
+  int todayWordRate = 0;
 
   late final GenerativeModel _model =
       GenerativeModel(model: "gemini-pro", apiKey: _apiKey);
@@ -48,6 +51,9 @@ class _WordQuizPageState extends State<WordQuizPage> {
   void initState() {
     super.initState();
     getWordQuizFuture = getWordQuiz();
+
+    viewModel = WordQuizViewModel();
+    _fetchTodayWordRate();
   }
 
   void reloadData() {
@@ -59,15 +65,16 @@ class _WordQuizPageState extends State<WordQuizPage> {
   }
 
   // Quiz Count
-  int _counter = 1;
-
-  void _quizCounter() {
+  void _fetchTodayWordRate() async {
+    int rate = await viewModel.getTodayWordRate();
     setState(() {
-      if (_counter == 10) {
-        _counter = 0;
-      }
-      _counter++;
+      todayWordRate = rate;
     });
+  }
+
+  void _updateTodayWordRate() async {
+    todayWordRate += 1;
+    await viewModel.updateTodayWordRate(todayWordRate);
   }
 
   // 영어 예문 공백 처리
@@ -131,7 +138,7 @@ class _WordQuizPageState extends State<WordQuizPage> {
         width: MediaQuery.of(context).size.width * 0.8,
         onPressed: () {
           showOverlay(context, true);
-          _quizCounter();
+          _updateTodayWordRate();
           if (isCorrect) {
             // 정답 BottomSheet
             showModalBottomSheet(
@@ -253,90 +260,98 @@ class _WordQuizPageState extends State<WordQuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<List<String>?>(
-        future: getWordQuizFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                    child: const Text('재시도'),
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            debugPrint('Error : ${snapshot.error}');
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                    child: const Text('재시도'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return SafeArea(
-              child: Column(
-                children: [
-                  LinearProgressIndicator(
-                    value: _counter > 10 ? 1.0 : _counter / 10,
-                    color: context.color.tertiary,
-                  ),
-                  const SizedBox(height: 20),
-                  CardComponent(
-                    height: 200,
-                    child: Column(
-                      children: [
-                        const Spacer(),
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          child: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
+    if (todayWordRate > 9) {
+      return const Scaffold(
+        body: Center(
+          child: Text('내일 봐요~'),
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: FutureBuilder<List<String>?>(
+          future: getWordQuizFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+                      child: const Text('재시도'),
+                    ),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              debugPrint('Error : ${snapshot.error}');
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+                      child: const Text('재시도'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return SafeArea(
+                child: Column(
+                  children: [
+                    LinearProgressIndicator(
+                      value: todayWordRate > 10 ? 1.0 : todayWordRate / 10,
+                      color: context.color.tertiary,
+                    ),
+                    const SizedBox(height: 20),
+                    CardComponent(
+                      height: 200,
+                      child: Column(
+                        children: [
+                          const Spacer(),
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            child: RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                children: [
+                                  addBlankInExample(
+                                      snapshot.data![1], snapshot.data![0]),
+                                ],
                               ),
-                              children: [
-                                addBlankInExample(
-                                    snapshot.data![1], snapshot.data![0]),
-                              ],
                             ),
                           ),
-                        ),
-                        Text(
-                          snapshot.data![2],
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'soyo_maple',
+                          Text(
+                            snapshot.data![2],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'soyo_maple',
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
+                          const Spacer(),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: getButtons(snapshot.data![0], snapshot.data![3],
-                        snapshot.data![4]),
-                  ),
-                ],
-              ),
-            );
-          }
-        },
-      ),
-    );
+                    const SizedBox(height: 20),
+                    Column(
+                      children: getButtons(snapshot.data![0], snapshot.data![3],
+                          snapshot.data![4]),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      );
+    }
   }
 }
 
