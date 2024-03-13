@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
+import 'package:speak_safari/src/view/main/home/home_view_model.dart';
 import 'package:speak_safari/src/view/main/word_quiz/word_quiz_view_model.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/small_hor_card.dart';
@@ -21,9 +22,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // 단어퀴즈
-  late WordQuizViewModel viewModel;
+  // 단어 퀴즈
+  late WordQuizViewModel wordQuizViewModel;
   int todayWordRate = 0;
+
+  // 진도 상태
+  late HomeViewModel homeViewModel;
+  List<WeeklyDto> weeklyList = [];
 
   late Future<String>? getWordFuture;
 
@@ -54,8 +59,12 @@ class _HomePageState extends State<HomePage> {
     getWordFuture = getWord();
 
     // 단어 퀴즈
-    viewModel = WordQuizViewModel();
+    wordQuizViewModel = WordQuizViewModel();
     _fetchTodayWordRate();
+
+    // 진도 상태
+    homeViewModel = HomeViewModel();
+    _fetchWeeklyStudyStatus();
   }
 
   void reloadData() {
@@ -68,9 +77,17 @@ class _HomePageState extends State<HomePage> {
 
   // 단어 퀴즈
   void _fetchTodayWordRate() async {
-    int rate = await viewModel.getTodayWordRate();
+    int rate = await wordQuizViewModel.getTodayWordRate();
     setState(() {
       todayWordRate = rate;
+    });
+  }
+
+  // 진도 상태
+  void _fetchWeeklyStudyStatus() async {
+    List<WeeklyDto> list = await homeViewModel.getWeeklyStudyStatus();
+    setState(() {
+      weeklyList = list;
     });
   }
 
@@ -106,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                       typo: const SoyoMaple(),
                       fontColor: Colors.black,
                       fontWeight: FontWeight.w600)
-                  .headline2),
+                  .headline4),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Text("  진행중!",
@@ -123,6 +140,47 @@ class _HomePageState extends State<HomePage> {
         ],
       );
     }
+  }
+
+  // 진도 상태 Widget
+  List<Widget> setWeeklyStudyStatusWidget(BuildContext context) {
+    return weeklyList.map((day) {
+      IconData iconData;
+      if (day.isFuture) {
+        iconData = Icons.pets;
+      } else {
+        iconData = day.studied ? Icons.done : Icons.close;
+        if (day.isAllQuiz) {
+          iconData = Icons.thumb_up;
+        }
+      }
+      return Column(
+        children: [
+          Icon(
+            iconData,
+            color: day.isFuture
+                ? Colors.grey
+                : (day.studied ? context.color.tertiary : Colors.red),
+          ),
+          Text(
+            day.day,
+            style: AppTypo(
+                    typo: const SoyoMaple(),
+                    fontColor: Colors.black,
+                    fontWeight: FontWeight.w600)
+                .body1,
+          ),
+          Text(
+            day.date,
+            style: AppTypo(
+                    typo: const SoyoMaple(),
+                    fontColor: Colors.black,
+                    fontWeight: FontWeight.w600)
+                .body3,
+          ),
+        ],
+      );
+    }).toList();
   }
 
   @override
@@ -282,106 +340,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Icon(
-                          Icons.done,
-                          color: context.color.tertiary,
-                        ),
-                        Text("일",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ),
-                        Text("월",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Icon(
-                          Icons.done,
-                          color: context.color.tertiary,
-                        ),
-                        Text("화",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(
-                          Icons.pets,
-                          color: Colors.brown,
-                        ),
-                        Text("수",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(
-                          Icons.pets,
-                          color: Colors.brown,
-                        ),
-                        Text("목",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(
-                          Icons.pets,
-                          color: Colors.brown,
-                        ),
-                        Text("금",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(
-                          Icons.pets,
-                          color: Colors.brown,
-                        ),
-                        Text("토",
-                            style: AppTypo(
-                                    typo: const SoyoMaple(),
-                                    fontColor: Colors.black,
-                                    fontWeight: FontWeight.w600)
-                                .body2),
-                      ],
-                    ),
-                  ],
+                  children: setWeeklyStudyStatusWidget(context),
                 )
               ],
             ),
