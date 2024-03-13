@@ -7,6 +7,8 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_message_widget.dart';
+import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/theme/res/typo.dart';
 
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({super.key, this.chatDto});
@@ -51,8 +53,9 @@ class _ChatroomState extends State<ChatRoomPage> {
   bool isSpeechRateSetting = false;
   bool isIntervalOpen = false;
 
-  double isInterval = 0.0;
+  int isInterval = 1;
   double _currentSliderValue = 0.5;
+
 
   late final GenerativeModel _model;
   late final ChatSession _chatSession;
@@ -67,13 +70,10 @@ class _ChatroomState extends State<ChatRoomPage> {
     // en-US
     _model = GenerativeModel(model: "gemini-pro", apiKey: _apiKey, generationConfig: GenerationConfig(
       topK: 1,
-      topP: 10
-
     ) );
 
 
     _chatSession = _model.startChat();
-    _sendMessage("hello");
   }
 
   void setSpeechRate(double ma) {
@@ -116,20 +116,18 @@ class _ChatroomState extends State<ChatRoomPage> {
                     ListView.builder(
                       itemBuilder: ((context, index) {
                         final content = _chatSession.history.toList()[index];
+                        var speakText = "";
                         final text = content.parts
                             .whereType<TextPart>()
                             .map((part)
                         {
-                          print(
-                              "---------------d-----------------------------------------");
 
 
                             var jsonString = part.text;
-
-
                             if(index % 2 == 1) {
                               Map<String, dynamic> user = jsonDecode(jsonString);
-                              return user['chat_content'];
+                              speakText = user['chat_content'];
+                              return "${speakText} \n한글 번역 : ${user['chat_trans']}";
                             } else {
                               var first = jsonString.substring(jsonString.indexOf('{') - 1, jsonString.indexOf('}') + 1);
                               Map<String, dynamic> user = jsonDecode(first);
@@ -143,7 +141,14 @@ class _ChatroomState extends State<ChatRoomPage> {
 
                           return InkWell(
                             onTap: () {
-                              tts.speak(text);
+                              do{
+                                tts.speak (speakText);
+                                if(isInterval > 1) {
+                                  Future.delayed(Duration(seconds: isInterval), () {
+                                        print("Waiting... Interval");
+                                  });
+                                }
+                              } while(isRepeat);
                             },
                             child: ChatMessageWidget(
                               message: text,
@@ -288,6 +293,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
+                                        if(!isIntervalOpen)
                                         IconButton.filled(
                                           style: ButtonStyle(
                                             backgroundColor: MaterialStateProperty.all(Colors.green),
@@ -305,7 +311,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                                           icon: const Icon(Icons.speed),
                                         ),
 
-                                        if(isSpeechRateSetting)setSliderWidget(context),
+                                        if(isSpeechRateSetting && !isIntervalOpen) setSliderWidget(context),
 
                                         if(!isSpeechRateSetting)
                                         IconButton.filled(
@@ -325,23 +331,78 @@ class _ChatroomState extends State<ChatRoomPage> {
                                           icon: Icon(Icons.repeat,
                                           ),
                                         ),
-                                        if(isRepeat && !isSpeechRateSetting && !isIntervalOpen)
+                                        if(!isSpeechRateSetting)
                                           IconButton
                                               .filled(
                                             style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all(Colors.green),
+                                              backgroundColor: MaterialStateProperty.all(isIntervalOpen ? Colors.green : Colors.grey),
                                               iconColor: MaterialStateProperty.all(Colors.white),
+
                                             ),
                                             onPressed: () {
+                                               setState(() {
                                               if(isIntervalOpen){
                                                 isIntervalOpen = false;
                                               } else {
                                                 isIntervalOpen = true;
                                               }
+                                             });
                                             },
                                             icon: const Icon(Icons.straighten),
                                           ),
                                         // if(isIntervalOpen)
+                                        if(isIntervalOpen)
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                             IconButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all(isInterval > 1 ? Colors.green : Colors.grey),
+                                                  iconColor: MaterialStateProperty.all(Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if(isInterval > 1){
+                                                      isInterval -= 1;
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(Icons.exposure_minus_1),
+                                              ),
+
+
+                                             Card(
+                                              shape: const ContinuousRectangleBorder(
+                                                borderRadius: BorderRadiusDirectional.only(
+                                                  topEnd: Radius.circular(5), topStart: Radius.circular(5), bottomEnd: Radius.circular(5), bottomStart: Radius.circular(5)
+                                                )
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("$isInterval",
+                                                    style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline2),
+                                              ),
+                                            ),
+
+                                            IconButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all(isInterval < 10 ? Colors.green : Colors.grey),
+                                                  iconColor: MaterialStateProperty.all(Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if(isInterval < 10){
+                                                      isInterval += 1;
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(Icons.plus_one),
+                                              ),
+
+
+                                          ],
+                                        ),
+
 
 
                                       ],
@@ -374,19 +435,23 @@ class _ChatroomState extends State<ChatRoomPage> {
     });
   }
 
-  Slider setSliderWidget(BuildContext context) {
-    return Slider(
-        value: _currentSliderValue,
-        max: 2,
-        activeColor: context.color.secondary,
-        thumbColor: context.color.tertiary,
-        label: _currentSliderValue.round().toString(),
-        onChanged: (double value) {
-          setState(() {
-            _currentSliderValue = value;
-            setSpeechRate(_currentSliderValue);
-          });
-        }
+  AnimatedOpacity setSliderWidget(BuildContext context) {
+    return AnimatedOpacity(
+      duration : Duration(milliseconds: 500),
+      opacity: 1.0,
+      child: Slider(
+          value: _currentSliderValue,
+          max: 2,
+          activeColor: context.color.secondary,
+          thumbColor: context.color.tertiary,
+          label: _currentSliderValue.round().toString(),
+          onChanged: (double value) {
+            setState(() {
+              _currentSliderValue = value;
+              setSpeechRate(_currentSliderValue);
+            });
+          }
+      ),
     );
   }
 
