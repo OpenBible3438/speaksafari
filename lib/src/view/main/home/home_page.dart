@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
+import 'package:speak_safari/src/view/main/home/home_view_model.dart';
 import 'package:speak_safari/src/view/main/word_quiz/word_quiz_view_model.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/small_hor_card.dart';
@@ -23,8 +24,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // 단어퀴즈
-  late WordQuizViewModel viewModel;
+  late WordQuizViewModel wordQuizViewModel;
   int todayWordRate = 0;
+
+  // 진도 상태
+  late HomeViewModel homeViewModel;
+  List<WeeklyDto> weeklyList = [];
 
   late Future<String>? getWordFuture;
 
@@ -55,8 +60,12 @@ class _HomePageState extends State<HomePage> {
     getWordFuture = getWord();
 
     // 단어 퀴즈
-    viewModel = WordQuizViewModel();
+    wordQuizViewModel = WordQuizViewModel();
     _fetchTodayWordRate();
+
+    // 진도 상태
+    homeViewModel = HomeViewModel();
+    _fetchWeeklyStudyStatus();
   }
 
   void reloadData() {
@@ -69,28 +78,36 @@ class _HomePageState extends State<HomePage> {
 
   // 단어 퀴즈
   void _fetchTodayWordRate() async {
-    int rate = await viewModel.getTodayWordRate();
+    int rate = await wordQuizViewModel.getTodayWordRate();
     setState(() {
       todayWordRate = rate;
     });
   }
+
+  // 진도 상태
+  void _fetchWeeklyStudyStatus() async {
+    List<WeeklyDto> list = await homeViewModel.getWeeklyStudyStatus();
+    setState(() {
+      weeklyList = list;
+    });
+  }
+
   Widget wordCardComponent(jsons) {
-   return  CardComponent(
+    return CardComponent(
       height: 180,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: RichText(
                 text: TextSpan(
                   style: AppTypo(
-                      typo: const SoyoMaple(),
-                      fontColor: Colors.black,
-                      fontWeight: FontWeight.w600)
+                          typo: const SoyoMaple(),
+                          fontColor: Colors.black,
+                          fontWeight: FontWeight.w600)
                       .body2,
                   children: [
                     TextSpan(text: '${jsons['eng_word']}'),
@@ -102,14 +119,15 @@ class _HomePageState extends State<HomePage> {
           ),
           Text('- ${jsons['person']} -',
               style: AppTypo(
-                  typo: const SoyoMaple(),
-                  fontColor: Colors.black,
-                  fontWeight: FontWeight.w600)
+                      typo: const SoyoMaple(),
+                      fontColor: Colors.black,
+                      fontWeight: FontWeight.w600)
                   .body1),
         ],
       ),
     );
   }
+
   // 단어 퀴즈 Row Widget
   Widget setTodayWordRateWidget() {
     if (todayWordRate > 9) {
@@ -161,13 +179,53 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // 진도 상태 Widget
+  List<Widget> setWeeklyStudyStatusWidget(BuildContext context) {
+    return weeklyList.map((day) {
+      IconData iconData;
+      if (day.isFuture) {
+        iconData = Icons.pets;
+      } else {
+        iconData = day.studied ? Icons.done : Icons.close;
+        if (day.isAllQuiz) {
+          iconData = Icons.thumb_up;
+        }
+      }
+      return Column(
+        children: [
+          Icon(
+            iconData,
+            color: day.isFuture
+                ? Colors.grey
+                : (day.studied ? context.color.tertiary : Colors.red),
+          ),
+          Text(
+            day.day,
+            style: AppTypo(
+                    typo: const SoyoMaple(),
+                    fontColor: Colors.black,
+                    fontWeight: FontWeight.w600)
+                .body1,
+          ),
+          Text(
+            day.date,
+            style: AppTypo(
+                    typo: const SoyoMaple(),
+                    fontColor: Colors.black,
+                    fontWeight: FontWeight.w600)
+                .body3,
+          ),
+        ],
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     // TODO: implement build
-    return 
-      Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -185,7 +243,8 @@ class _HomePageState extends State<HomePage> {
                 child: AnimatedTextKit(
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
-                    WavyAnimatedText('${ FirebaseAuth.instance.currentUser?.email}'),
+                    WavyAnimatedText(
+                        '${FirebaseAuth.instance.currentUser?.email}'),
                   ],
                   isRepeatingAnimation: false,
                   onTap: () {
@@ -212,25 +271,25 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-
         FutureBuilder<String>(
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CardComponent(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+              var jsons = jsonDecode(
+                  '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
               return wordCardComponent(jsons);
             } else if (snapshot.hasError) {
               debugPrint('Error : ${snapshot.error}');
-              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+              var jsons = jsonDecode(
+                  '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
 
               return wordCardComponent(jsons);
             } else {
               var jsons = jsonDecode(snapshot.data ??
                   '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
               return wordCardComponent(jsons);
-
             }
           },
         ),
