@@ -25,9 +25,9 @@ class ChatMessageWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child:
-            // MarkdownBody(data: message, selectable: true,)
+        //     MarkdownBody(data: message, selectable: true,)
         // ),
-           Text("${message}", style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black).body1,)),
+           Text("$message", style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black).body1,)),
 
 
       ],

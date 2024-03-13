@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
+import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
 import 'package:speak_safari/theme/component/card/textfield_card.dart';
+import 'package:speak_safari/util/route_path.dart';
 
 class NewChatPage extends StatefulWidget {
   const NewChatPage({super.key});
@@ -68,10 +72,41 @@ class _NewChatPageState extends State<NewChatPage> {
                     text: "대화 시작하기",
                     backgroundColor: context.color.tertiary,
                     width: MediaQuery.of(context).size.width * 0.8,
-                    onPressed: () {},
+                    onPressed: () {
+                      ChatDto newChatDto = ChatDto(
+                          chatNm: titleController.text,
+                          chatCtt: subjectController.text,
+                          aIRole: aiRoleController.text,
+                          usrRole: myRoleController.text,
+                          chatCtgr: 'custom',
+                          chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+                          usrEmail: FirebaseAuth.instance.currentUser?.email
+                      );
+
+                      createFirestore2(newChatDto);
+
+
+                      Navigator.popAndPushNamed(context, RoutePath.chatroom, arguments: newChatDto);
+                    },
                   ),
                 ],
               ),
             )));
   }
+
+  Future<void> createFirestore2(ChatDto chatDto) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    _firestore.collection("chat").doc("${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}").set(
+      {
+        "ai_role": chatDto.aIRole,
+        "chat_nm": chatDto.chatNm,
+        "chat_uid": chatDto.chatUid,
+        "usr_email": FirebaseAuth.instance.currentUser?.email,
+        "usr_role" : chatDto.usrRole,
+      } ,);
+
+  }
+
+
 }
