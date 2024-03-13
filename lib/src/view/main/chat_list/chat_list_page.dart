@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
@@ -124,6 +125,7 @@ class _ChatListPage extends State<ChatListPage> {
                                 child: GestureDetector(
                                   onTap: () {
                                     if (provider.chatDtoList[index].chatCtgr == "topics"){
+                                      provider.chatDtoList[index].chatUid = "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}";
                                     provider.createFirestore(provider.chatDtoList[index]);
                                     }
                                     Navigator

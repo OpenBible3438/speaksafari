@@ -87,7 +87,7 @@ class _ChatroomState extends State<ChatRoomPage> {
             apiKey: _apiKey,
             generationConfig: GenerationConfig(topK: 1, topP: 1));
         _chatSession = _model.startChat();
-        _sendMessage("hello");
+        _sendMessage("자 이제부터 영어로 대화하자");
       } else {
         _model = GenerativeModel(
             model: 'gemini-pro',
@@ -182,12 +182,16 @@ class _ChatroomState extends State<ChatRoomPage> {
                       itemBuilder: ((context, index) {
                         final content = _chatSession.history.toList()[index];
                         var speakText = "";
+                        if(index == 0) {
+                          return SizedBox.shrink();
+                        }
                         final text =
                         content.parts.whereType<TextPart>().map((part) {
                           var jsonString = part.text;
 
                           if (allMessages.isEmpty) {
                             //새로운 대화일때
+
                             if (index % 2 == 1) {
                               Map<String, dynamic> user =
                               jsonDecode(jsonString);
@@ -214,7 +218,11 @@ class _ChatroomState extends State<ChatRoomPage> {
                               return user['user_chat_content'];
                             }
                             //기존 대화 있을 때
-                            speakText = jsonString;
+                            int index = jsonString.indexOf("한글 번역");
+                            if (index != -1) {
+                              speakText = jsonString.substring(0, index).trim();
+                            } else {
+                            }
                             return jsonString;
                           }
 
