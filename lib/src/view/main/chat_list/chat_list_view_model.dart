@@ -109,7 +109,7 @@ class ChatListViewModel extends BaseViewModel {
       {
         "ai_role": chatDto.aIRole,
         "chat_nm": chatDto.chatNm,
-        "chat_uid": "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+        "chat_uid": "${chatDto.chatUid}",
         "usr_email": FirebaseAuth.instance.currentUser?.email,
         "usr_role" : chatDto.usrRole,
       } ,);

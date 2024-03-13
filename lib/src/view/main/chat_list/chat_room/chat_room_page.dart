@@ -82,6 +82,7 @@ class _ChatroomState extends State<ChatRoomPage> {
     // getMessages();
     getMessages().whenComplete(() {
       if (allMessages.isEmpty) {
+        print("empty");
         _model = GenerativeModel(
             model: "gemini-pro",
             apiKey: _apiKey,
@@ -130,6 +131,13 @@ class _ChatroomState extends State<ChatRoomPage> {
       });
     });
     print("initState 끝");
+  }
+
+
+  @override
+  void dispose() {
+    // ChatSession을 종료하고 자원을 해제합니다.
+    super.dispose();
   }
 
   void setSpeechRate(double ma) {

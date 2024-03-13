@@ -9,6 +9,8 @@ import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
 import 'package:speak_safari/util/route_path.dart';
 
+import '../../../../theme/res/typo.dart';
+
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
     super.key,
@@ -71,7 +73,8 @@ class _ChatListPage extends State<ChatListPage> {
                         },
                         child: Text(
                           entry.value.title,
-                          style: TextStyle(
+                          style:
+                          TextStyle(
                             fontSize: entry.value.isActive
                                 ? 20
                                 : 16, // 활성화된 탭은 글씨 크게
@@ -83,6 +86,8 @@ class _ChatListPage extends State<ChatListPage> {
                                 : Colors
                                 .grey, // 활성화된 탭은 검은색, 비활성화된 탭은 회색
                           ),
+
+
                         ),
 
                       ),
@@ -125,7 +130,8 @@ class _ChatListPage extends State<ChatListPage> {
                                 child: GestureDetector(
                                   onTap: () {
                                     if (provider.chatDtoList[index].chatCtgr == "topics"){
-                                      provider.chatDtoList[index].chatUid = "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}";
+                                      print("탭탭탭메뉴");
+
                                     provider.createFirestore(provider.chatDtoList[index]);
                                     }
                                     Navigator
@@ -163,9 +169,15 @@ class _ChatListPage extends State<ChatListPage> {
                                                     index]
                                                         .chatCtgr ??
                                                         '',
-                                                    style: TextStyle(
-                                                        fontSize: 13),
+                                                    style:                           AppTypo(
+                                                        typo: const SoyoMaple(),
+                                                        fontColor: Colors.black,
+                                                        fontWeight: FontWeight.w600)
+                                                        .body2,
                                                   ),
+
+
+
                                                   Spacer(),
                                                   Padding(
                                                     padding:
@@ -174,9 +186,11 @@ class _ChatListPage extends State<ChatListPage> {
                                                     child: Text(
                                                       'AI ${provider.chatDtoList[index].aIRole}' ??
                                                           '',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.grey),
+                                                      style:                           AppTypo(
+                                                          typo: const SoyoMaple(),
+                                                          fontColor: Colors.grey,
+                                                          fontWeight: FontWeight.w600)
+                                                          .body2,
                                                     ),
                                                   ),
                                                 ],
@@ -186,7 +200,11 @@ class _ChatListPage extends State<ChatListPage> {
                                                     .chatNm ??
                                                     '',
                                                 style:
-                                                TextStyle(fontSize: 13),
+                                                AppTypo(
+                                                    typo: const SoyoMaple(),
+                                                    fontColor: Colors.black,
+                                                    fontWeight: FontWeight.w600)
+                                                    .body1,
                                               ),
                                               Row(
                                                 mainAxisAlignment:
@@ -199,9 +217,11 @@ class _ChatListPage extends State<ChatListPage> {
                                                     child: Text(
                                                       '나 ${provider.chatDtoList[index].usrRole}' ??
                                                           '',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.grey),
+                                                      style:                           AppTypo(
+                                                          typo: const SoyoMaple(),
+                                                          fontColor: Colors.grey,
+                                                          fontWeight: FontWeight.w600)
+                                                          .body2,
                                                     ),
                                                   ),
                                                 ],
