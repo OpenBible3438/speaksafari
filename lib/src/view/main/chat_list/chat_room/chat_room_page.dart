@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +10,8 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_message_widget.dart';
+import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/theme/res/typo.dart';
 
 import '../../../../data/message_dto.dart';
 
@@ -55,13 +58,13 @@ class _ChatroomState extends State<ChatRoomPage> {
   bool isSpeechRateSetting = false;
   bool isIntervalOpen = false;
 
-  double isInterval = 0.0;
   double _currentSliderValue = 0.5;
+  int isInterval = 1;
 
   late final GenerativeModel _model;
-  late  final ChatSession _chatSession;
+  late final ChatSession _chatSession;
 
-  bool isChatSessionLoading = true ;
+  bool isChatSessionLoading = true;
 
   List<MessageDto> myMessages = [];
   List<MessageDto> aiMessages = [];
@@ -93,41 +96,38 @@ class _ChatroomState extends State<ChatRoomPage> {
         // Initialize the chat
         List<Content> contents = [];
 
-
         while (allMessages.isNotEmpty && allMessages.last.chatSpeaker == "me") {
           allMessages.removeLast();
         }
 
         int currentIndex = 0;
         while (currentIndex < allMessages.length - 1) {
-          if (allMessages[currentIndex].chatSpeaker == "me" && allMessages[currentIndex + 1].chatSpeaker == "me") {
+          if (allMessages[currentIndex].chatSpeaker == "me" &&
+              allMessages[currentIndex + 1].chatSpeaker == "me") {
             allMessages.removeAt(currentIndex);
           } else {
             currentIndex++;
           }
         }
 
-
-
-
-
         allMessages.forEach((element) {
           if (element.chatSpeaker == "me") {
             contents.add(Content.text(element.chatContent ?? "me의 오류 메세지"));
           } else {
-            contents.add(
-                Content.model([TextPart(element.chatContent ?? "ai의 오류 메세지")]));
+            contents.add(Content.model([
+              TextPart(
+                  "${element.chatContent} \n한글 번역 : ${element.chatTrans}" ??
+                      "ai의 오류 메세지")
+            ]));
           }
         });
 
         _chatSession = _model.startChat(history: contents);
-
       }
 
       setState(() {
         isChatSessionLoading = false;
       });
-
     });
     print("initState 끝");
   }
@@ -148,336 +148,450 @@ class _ChatroomState extends State<ChatRoomPage> {
     } else {
       print("chat Session not null");
 
-
-    return Scaffold(
-      appBar: AppBar(
-        title: AnimatedTextKit(
-          animatedTexts: [
-            ColorizeAnimatedText(
-              'Gemini',
-              textStyle: TextStyle(
-                fontFamily: "soyo_maple",
-                // The color must be set to white for this to work
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 40,
+      return Scaffold(
+        appBar: AppBar(
+          title: AnimatedTextKit(
+            animatedTexts: [
+              ColorizeAnimatedText(
+                'Gemini',
+                textStyle: TextStyle(
+                  fontFamily: "soyo_maple",
+                  // The color must be set to white for this to work
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 40,
+                ),
+                colors: [
+                  Colors.red,
+                  Colors.blue,
+                  Colors.green,
+                ],
               ),
-              colors: [
-                Colors.red,
-                Colors.blue,
-                Colors.green,
-              ],
-            ),
-          ],
-          isRepeatingAnimation: true,
+            ],
+            isRepeatingAnimation: true,
+          ),
         ),
-      ),
-      body: Container(
-        color: context.color.tertiary,
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
+        body: Container(
+          color: context.color.tertiary,
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    ListView.builder(
+                      itemBuilder: ((context, index) {
+                        final content = _chatSession.history.toList()[index];
+                        var speakText = "";
+                        final text =
+                            content.parts.whereType<TextPart>().map((part) {
+                          var jsonString = part.text;
 
-
-        ListView.builder(
-                    itemBuilder: ((context, index) {
-                      final content = _chatSession.history.toList()[index];
-                      final text =
-                          content.parts.whereType<TextPart>().map((part) {
-
-                        var jsonString = part.text;
-
-                        if (allMessages.isEmpty) {
-                          //새로운 대화일때
-                          if (index % 2 == 1) {
-                            Map<String, dynamic> user = jsonDecode(jsonString);
-                            return "${user['chat_content']} \n ${user['chat_trans']}";
+                          if (allMessages.isEmpty) {
+                            //새로운 대화일때
+                            if (index % 2 == 1) {
+                              Map<String, dynamic> user =
+                                  jsonDecode(jsonString);
+                              speakText = user['chat_content'];
+                              return "${speakText} \n한글 번역 : ${user['chat_trans']}";
+                            } else {
+                              var first = jsonString.substring(
+                                  jsonString.indexOf('{') - 1,
+                                  jsonString.indexOf('}') + 1);
+                              Map<String, dynamic> user = jsonDecode(first);
+                              return user['user_chat_content'];
+                            }
                           } else {
-                            var first = jsonString.substring(
-                                jsonString.indexOf('{') - 1,
-                                jsonString.indexOf('}') + 1);
-                            Map<String, dynamic> user = jsonDecode(first);
-                            return user['user_chat_content'];
+                            if (jsonString.startsWith('{')) {
+                              Map<String, dynamic> user =
+                                  jsonDecode(jsonString);
+                              speakText = user['chat_content'];
+                              return "${speakText} \n한글 번역 : ${user['chat_trans']}";
+                            } else if (jsonString.startsWith('유효한')) {
+                              var first = jsonString.substring(
+                                  jsonString.indexOf('{') - 1,
+                                  jsonString.indexOf('}') + 1);
+                              Map<String, dynamic> user = jsonDecode(first);
+                              return user['user_chat_content'];
+                            }
+                            //기존 대화 있을 때
+                            speakText = jsonString;
+                            return jsonString;
                           }
-                        } else {
-                          if (jsonString.startsWith('{')) {
-                            Map<String, dynamic> user = jsonDecode(jsonString);
-                            return "${user['chat_content']} \n ${user['chat_trans']}";
-                          } else if (jsonString.startsWith('유효한')){
-                            var first = jsonString.substring(
-                                jsonString.indexOf('{') - 1,
-                                jsonString.indexOf('}') + 1);
-                            Map<String, dynamic> user = jsonDecode(first);
-                            return user['user_chat_content'];
-                          }
-                          //기존 대화 있을 때
-                          return jsonString;
-                        }
 
-                        // return firstString;
-                      }).join();
+                          // return firstString;
+                        }).join();
 
-                      return InkWell(
-                        onTap: () {
-                          tts.speak(text);
-                        },
-                        child: ChatMessageWidget(
-                          message: text,
-                          isUserMessage: content.role == 'user',
-                        ),
-                      );
-                    }),
-                    itemCount: _chatSession.history.length,
-                    controller: _scrollController,
-                  ),
-                  if (!isFloating)
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(30.0),
-                              child: IconButton.filled(
-                                onPressed: () {
-                                  setState(() {
-                                    isFloating = true;
-                                  });
-                                },
-                                iconSize:
-                                    MediaQuery.of(context).size.width * 0.1,
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      context.color.primary),
-                                  iconColor:
-                                      MaterialStateProperty.all(Colors.green),
-                                ),
-                                icon: const Icon(
-                                  Icons.send_rounded,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        return InkWell(
+                          onTap: () {
+                            if (isRepeat) {
+                              if (isInterval > 0) {
+                                tts.setCompletionHandler(() {
+                                  if (isRepeat) {
+                                    sleep(Duration(seconds: isInterval));
+                                    tts.speak(speakText);
+                                  }
+                                });
+                                tts.speak(speakText);
+                              }
+                            } else {
+                              tts.speak(speakText);
+                            }
+                          },
+                          child: ChatMessageWidget(
+                            message: text,
+                            isUserMessage: content.role == 'user',
+                          ),
+                        );
+                      }),
+                      itemCount: _chatSession.history.length,
+                      controller: _scrollController,
                     ),
-                  if (isLoading && isFloating)
-                    LinearProgressIndicator(
-                      color: Colors.blue,
-                      backgroundColor: Colors.transparent,
-                    ),
-                  if (isFloating)
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Hero(
-                          tag: "textField",
-                          child: Container(
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40.0),
-                                  topRight: Radius.circular(40.0),
-                                ),
-                              ),
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  IconButton.filled(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.white),
-                                      iconColor: MaterialStateProperty.all(
-                                          Colors.black),
-                                      elevation: MaterialStateProperty.all(5),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        isFloating = false;
-                                        isSetting = false;
-                                        isSpeechRateSetting = false;
-                                      });
-                                    },
-                                    icon: const Icon(Icons.close),
+                    if (!isFloating)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(30.0),
+                                child: IconButton.filled(
+                                  onPressed: () {
+                                    setState(() {
+                                      isFloating = true;
+                                    });
+                                  },
+                                  iconSize:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        context.color.primary),
+                                    iconColor:
+                                        MaterialStateProperty.all(Colors.green),
                                   ),
-                                  if (!isSetting)
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _textController,
-                                        focusNode: _focusNode,
-                                        onSubmitted: (value) {
-                                          if (!isLoading) {
-                                            _sendMessage(value);
-                                          }
-                                        },
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          //<-- SEE HERE
-                                          fillColor: Colors.green.withAlpha(90),
-                                          //<-- SEE HERE
-                                          suffixIcon: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: IconButton.filled(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.green),
-                                                iconColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.white),
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    if (isLoading && isFloating)
+                      LinearProgressIndicator(
+                        color: Colors.blue,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    if (isFloating)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Hero(
+                            tag: "textField",
+                            child: Container(
+                              decoration: const ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40.0),
+                                    topRight: Radius.circular(40.0),
+                                  ),
+                                ),
+                                color: Colors.white,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    IconButton.filled(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        iconColor: MaterialStateProperty.all(
+                                            Colors.black),
+                                        elevation: MaterialStateProperty.all(5),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          isFloating = false;
+                                          isSetting = false;
+                                          isSpeechRateSetting = false;
+                                        });
+                                      },
+                                      icon: const Icon(Icons.close),
+                                    ),
+                                    if (!isSetting)
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _textController,
+                                          focusNode: _focusNode,
+                                          onSubmitted: (value) {
+                                            if (!isLoading) {
+                                              _sendMessage(value);
+                                            }
+                                          },
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            //<-- SEE HERE
+                                            fillColor:
+                                                Colors.green.withAlpha(90),
+                                            //<-- SEE HERE
+                                            suffixIcon: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: IconButton.filled(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.green),
+                                                  iconColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
+                                                ),
+                                                onPressed: isLoading
+                                                    ? null
+                                                    : () {
+                                                        if (!isLoading) {
+                                                          _sendMessage(
+                                                              _textController
+                                                                  .text);
+                                                        }
+                                                      },
+                                                icon: const Icon(Icons.send),
                                               ),
-                                              onPressed: isLoading
-                                                  ? null
-                                                  : () {
-                                                      if (!isLoading) {
-                                                        _sendMessage(
-                                                            _textController
-                                                                .text);
-                                                      }
-                                                    },
-                                              icon: const Icon(Icons.send),
                                             ),
+                                            enabledBorder:
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
+                                            disabledBorder:
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                40.0)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.white,
+                                                        style:
+                                                            BorderStyle.none)),
+                                            border: const OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(40.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.white,
+                                                    style: BorderStyle.none)),
+                                            labelText: '메세지 입력',
                                           ),
-                                          enabledBorder:
-                                              const OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              40.0)),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.white,
-                                                      style: BorderStyle.none)),
-                                          disabledBorder:
-                                              const OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              40.0)),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.white,
-                                                      style: BorderStyle.none)),
-                                          focusedBorder:
-                                              const OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              40.0)),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.white,
-                                                      style: BorderStyle.none)),
-                                          border: const OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(40.0)),
-                                              borderSide: BorderSide(
-                                                  color: Colors.white,
-                                                  style: BorderStyle.none)),
-                                          labelText: '메세지 입력',
                                         ),
                                       ),
-                                    ),
-                                  if (isSetting)
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          IconButton.filled(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.green),
-                                              iconColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                if (isSpeechRateSetting) {
-                                                  isSpeechRateSetting = false;
-                                                } else {
-                                                  isSpeechRateSetting = true;
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.speed),
-                                          ),
+                                    if (isSetting)
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            if (!isIntervalOpen)
+                                              IconButton.filled(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.green),
+                                                  iconColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (isSpeechRateSetting) {
+                                                      isSpeechRateSetting =
+                                                          false;
+                                                    } else {
+                                                      isSpeechRateSetting =
+                                                          true;
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(Icons.speed),
+                                              ),
 
-                                          if (isSpeechRateSetting)
-                                            setSliderWidget(context),
+                                            if (isSpeechRateSetting &&
+                                                !isIntervalOpen)
+                                              setSliderWidget(context),
 
-                                          if (!isSpeechRateSetting)
-                                            IconButton.filled(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        isRepeat
-                                                            ? Colors.green
-                                                            : Colors.grey),
-                                                iconColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.white),
+                                            if (!isSpeechRateSetting)
+                                              IconButton.filled(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          isRepeat
+                                                              ? Colors.green
+                                                              : Colors.grey),
+                                                  iconColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
+                                                ),
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    if (isRepeat) {
+                                                      isRepeat = false;
+                                                    } else {
+                                                      isRepeat = true;
+                                                    }
+                                                  });
+                                                },
+                                                icon: Icon(
+                                                  Icons.repeat,
+                                                ),
                                               ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (isRepeat) {
-                                                    isRepeat = false;
-                                                  } else {
-                                                    isRepeat = true;
-                                                  }
-                                                });
-                                              },
-                                              icon: Icon(
-                                                Icons.repeat,
+                                            if (!isSpeechRateSetting)
+                                              IconButton.filled(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          isIntervalOpen
+                                                              ? Colors.green
+                                                              : Colors.grey),
+                                                  iconColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (isIntervalOpen) {
+                                                      isIntervalOpen = false;
+                                                    } else {
+                                                      isIntervalOpen = true;
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                    Icons.straighten),
                                               ),
-                                            ),
-                                          if (isRepeat &&
-                                              !isSpeechRateSetting &&
-                                              !isIntervalOpen)
-                                            IconButton.filled(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.green),
-                                                iconColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.white),
+                                            // if(isIntervalOpen)
+                                            if (isIntervalOpen)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  IconButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(isInterval >
+                                                                      1
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .grey),
+                                                      iconColor:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
+                                                    ),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (isInterval > 1) {
+                                                          isInterval -= 1;
+                                                        }
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.exposure_minus_1),
+                                                  ),
+                                                  Card(
+                                                    shape: const ContinuousRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadiusDirectional.only(
+                                                                topEnd: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                topStart: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                bottomEnd: Radius
+                                                                    .circular(
+                                                                        5),
+                                                                bottomStart: Radius
+                                                                    .circular(
+                                                                        5))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text("$isInterval",
+                                                          style: AppTypo(
+                                                                  typo:
+                                                                      const SoyoMaple(),
+                                                                  fontColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)
+                                                              .headline2),
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(isInterval <
+                                                                      10
+                                                                  ? Colors.green
+                                                                  : Colors
+                                                                      .grey),
+                                                      iconColor:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
+                                                    ),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (isInterval < 10) {
+                                                          isInterval += 1;
+                                                        }
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.plus_one),
+                                                  ),
+                                                ],
                                               ),
-                                              onPressed: () {
-                                                if (isIntervalOpen) {
-                                                  isIntervalOpen = false;
-                                                } else {
-                                                  isIntervalOpen = true;
-                                                }
-                                              },
-                                              icon:
-                                                  const Icon(Icons.straighten),
-                                            ),
-                                          // if(isIntervalOpen)
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  settingIcon()
-                                ],
+                                    settingIcon()
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                ],
+                        ],
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
     }
   }
 
@@ -491,19 +605,23 @@ class _ChatroomState extends State<ChatRoomPage> {
     });
   }
 
-  Slider setSliderWidget(BuildContext context) {
-    return Slider(
-        value: _currentSliderValue,
-        max: 2,
-        activeColor: context.color.secondary,
-        thumbColor: context.color.tertiary,
-        label: _currentSliderValue.round().toString(),
-        onChanged: (double value) {
-          setState(() {
-            _currentSliderValue = value;
-            setSpeechRate(_currentSliderValue);
-          });
-        });
+  AnimatedOpacity setSliderWidget(BuildContext context) {
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 500),
+      opacity: 1.0,
+      child: Slider(
+          value: _currentSliderValue,
+          max: 2,
+          activeColor: context.color.secondary,
+          thumbColor: context.color.tertiary,
+          label: _currentSliderValue.round().toString(),
+          onChanged: (double value) {
+            setState(() {
+              _currentSliderValue = value;
+              setSpeechRate(_currentSliderValue);
+            });
+          }),
+    );
   }
 
   void setInterval() {
@@ -586,7 +704,7 @@ class _ChatroomState extends State<ChatRoomPage> {
         ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
 
     print("check error");
-      print(response.text);
+    print(response.text);
 
     Map<String, dynamic> user = jsonDecode(response.text ?? "오류 응답");
 
@@ -656,6 +774,5 @@ class _ChatroomState extends State<ChatRoomPage> {
       });
     });
     print("getMessages 끝");
-
   }
 }
