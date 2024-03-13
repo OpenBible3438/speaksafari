@@ -25,19 +25,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // Provider(
-        //   create: (context) => ProductRepository(),
-        // ),
         ChangeNotifierProvider(
           create: (context) => ThemeService(),
         ),
         ChangeNotifierProvider(create: (context) => FirebaseAuthProvider()),
-        // ChangeNotifierProvider(
-        //   create: (context) => LangService(),
-        // ),
-        // ChangeNotifierProvider(
-        //   create: (context) => CartService(),
-        // ),
       ],
       child: const MyApp(),
     ),

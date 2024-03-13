@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 
-class SmallHorCardComponent extends ConsumerWidget {
+class SmallHorCardComponent extends StatelessWidget {
   const SmallHorCardComponent({
     super.key,
     required this.child,
@@ -15,7 +14,7 @@ class SmallHorCardComponent extends ConsumerWidget {
   final bool? isRoundAll;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       child: SizedBox(
         height: 80,
@@ -25,7 +24,7 @@ class SmallHorCardComponent extends ConsumerWidget {
             borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color: ref.context.color.primary,
+          color: context.color.primary,
           child: child,
         ),
       ),
