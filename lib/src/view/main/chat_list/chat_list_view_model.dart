@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
 import 'package:speak_safari/src/view/base/base_view_model.dart';
 
@@ -53,20 +54,25 @@ class ChatListViewModel extends BaseViewModel {
         aIRole: '입국심사관',
         usrRole: '입국여행자',
         chatCtgr: 'topics',
+        chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+          usrEmail: FirebaseAuth.instance.currentUser?.email
       ),
       ChatDto(
         chatNm: '제과점에서 계산하기',
         chatCtt: 'Content 2',
-        aIRole: 'AI Role 2',
-        usrRole: 'User Role 2',
+        aIRole: '캐셔',
+        usrRole: '손님',
         chatCtgr: 'topics',
+          chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+          usrEmail: FirebaseAuth.instance.currentUser?.email
       ),
       ChatDto(
         chatNm: '서울 코엑스에서 행인에게 길물어보기',
         chatCtt: 'Content 3',
         aIRole: 'AI Role 3',
         usrRole: 'User Role 3',
-        chatCtgr: 'topics',
+        chatCtgr: 'topics', chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+          usrEmail: FirebaseAuth.instance.currentUser?.email
       ),
       ChatDto(
         chatNm: '고객센터에 버스정류장 분실물 신고',
@@ -74,6 +80,8 @@ class ChatListViewModel extends BaseViewModel {
         aIRole: 'AI Role 1',
         usrRole: 'User Role 2',
         chatCtgr: 'topics',
+          chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+          usrEmail: FirebaseAuth.instance.currentUser?.email
       ),
       ChatDto(
         chatNm: '편의점',
@@ -81,36 +89,43 @@ class ChatListViewModel extends BaseViewModel {
         aIRole: 'AI Role 2',
         usrRole: 'User Role 3',
         chatCtgr: 'topics',
+          chatUid:  "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+          usrEmail: FirebaseAuth.instance.currentUser?.email
       ),
       // 나머지 ChatDto 5개를 여기에 추가해주세요
     ];
 
 
 
-        topicsChatList = mockDataList;
+    topicsChatList = mockDataList;
 
   }
 
 
+  Future<void> createFirestore(ChatDto chatDto) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    _firestore.collection("chat").doc("${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}").set(
+      {
+        "ai_role": chatDto.aIRole,
+        "chat_nm": chatDto.chatNm,
+        "chat_uid": "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}",
+        "usr_email": FirebaseAuth.instance.currentUser?.email,
+        "usr_role" : chatDto.usrRole,
+      } ,);
+
+  }
 
   Future<List<ChatDto>> fromFirestore() async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    // _firestore.collection("chat").doc("123456789").set(
-    //   {
-    //     "brand": "Genesis",
-    //     "name": "G70",
-    //     "price": 5000,
-    //   },);
-
     QuerySnapshot<Map<String, dynamic>> _snapshot =
-    await _firestore.collection("chat").get();
+    await _firestore.collection("chat").where("usr_email", isEqualTo: FirebaseAuth.instance.currentUser?.email ) .get();
 
     _snapshot.docs.forEach((doc) {
       print(doc.data());
     });
 
-    print('asdf');
     print(_snapshot);
     List<ChatDto> _result =
     _snapshot.docs.map((e) => ChatDto.fromJson(e.data())).toList();
@@ -127,14 +142,16 @@ class ChatListViewModel extends BaseViewModel {
 }
 
 class ChatDto {
+  String? chatUid;
   String? chatNm;
   String? chatCtt;
   String? aIRole;
   String? usrRole;
   String? chatCtgr;
+  String? usrEmail;
 
   ChatDto(
-      {this.chatNm, this.chatCtt, this.aIRole, this.usrRole, this.chatCtgr});
+      {this.chatNm, this.chatCtt, this.aIRole, this.usrRole, this.chatCtgr, this.chatUid, this.usrEmail});
 
   factory ChatDto.fromJson(Map<String, dynamic> json) {
     return ChatDto(
@@ -143,6 +160,8 @@ class ChatDto {
       aIRole: json['ai_role'],
       usrRole: json['usr_role'],
       chatCtgr: json['chat_ctgr'],
+      chatUid: json['chat_uid'],
+      usrEmail: json['usr_email'],
     );
   }
 

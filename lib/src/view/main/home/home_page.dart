@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
-import 'package:speak_safari/src/view/main/home/home_view_model.dart';
 import 'package:speak_safari/src/view/main/word_quiz/word_quiz_view_model.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/theme/component/card/small_hor_card.dart';
@@ -22,13 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // 단어 퀴즈
-  late WordQuizViewModel wordQuizViewModel;
+  // 단어퀴즈
+  late WordQuizViewModel viewModel;
   int todayWordRate = 0;
-
-  // 진도 상태
-  late HomeViewModel homeViewModel;
-  List<WeeklyDto> weeklyList = [];
 
   late Future<String>? getWordFuture;
 
@@ -59,12 +55,8 @@ class _HomePageState extends State<HomePage> {
     getWordFuture = getWord();
 
     // 단어 퀴즈
-    wordQuizViewModel = WordQuizViewModel();
+    viewModel = WordQuizViewModel();
     _fetchTodayWordRate();
-
-    // 진도 상태
-    homeViewModel = HomeViewModel();
-    _fetchWeeklyStudyStatus();
   }
 
   void reloadData() {
@@ -77,20 +69,47 @@ class _HomePageState extends State<HomePage> {
 
   // 단어 퀴즈
   void _fetchTodayWordRate() async {
-    int rate = await wordQuizViewModel.getTodayWordRate();
+    int rate = await viewModel.getTodayWordRate();
     setState(() {
       todayWordRate = rate;
     });
   }
+  Widget wordCardComponent(jsons) {
+   return  CardComponent(
+      height: 180,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
 
-  // 진도 상태
-  void _fetchWeeklyStudyStatus() async {
-    List<WeeklyDto> list = await homeViewModel.getWeeklyStudyStatus();
-    setState(() {
-      weeklyList = list;
-    });
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RichText(
+                text: TextSpan(
+                  style: AppTypo(
+                      typo: const SoyoMaple(),
+                      fontColor: Colors.black,
+                      fontWeight: FontWeight.w600)
+                      .body2,
+                  children: [
+                    TextSpan(text: '${jsons['eng_word']}'),
+                    TextSpan(text: '\n${jsons['kor_word']}'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Text('- ${jsons['person']} -',
+              style: AppTypo(
+                  typo: const SoyoMaple(),
+                  fontColor: Colors.black,
+                  fontWeight: FontWeight.w600)
+                  .body1),
+        ],
+      ),
+    );
   }
-
   // 단어 퀴즈 Row Widget
   Widget setTodayWordRateWidget() {
     if (todayWordRate > 9) {
@@ -123,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                       typo: const SoyoMaple(),
                       fontColor: Colors.black,
                       fontWeight: FontWeight.w600)
-                  .headline4),
+                  .headline2),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Text("  진행중!",
@@ -142,53 +161,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // 진도 상태 Widget
-  List<Widget> setWeeklyStudyStatusWidget(BuildContext context) {
-    return weeklyList.map((day) {
-      IconData iconData;
-      if (day.isFuture) {
-        iconData = Icons.pets;
-      } else {
-        iconData = day.studied ? Icons.done : Icons.close;
-        if (day.isAllQuiz) {
-          iconData = Icons.thumb_up;
-        }
-      }
-      return Column(
-        children: [
-          Icon(
-            iconData,
-            color: day.isFuture
-                ? Colors.grey
-                : (day.studied ? context.color.tertiary : Colors.red),
-          ),
-          Text(
-            day.day,
-            style: AppTypo(
-                    typo: const SoyoMaple(),
-                    fontColor: Colors.black,
-                    fontWeight: FontWeight.w600)
-                .body1,
-          ),
-          Text(
-            day.date,
-            style: AppTypo(
-                    typo: const SoyoMaple(),
-                    fontColor: Colors.black,
-                    fontWeight: FontWeight.w600)
-                .body3,
-          ),
-        ],
-      );
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     // TODO: implement build
-    return Column(
+    return 
+      Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -206,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                 child: AnimatedTextKit(
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
-                    WavyAnimatedText('Tom Hanks'),
+                    WavyAnimatedText('${ FirebaseAuth.instance.currentUser?.email}'),
                   ],
                   isRepeatingAnimation: false,
                   onTap: () {
@@ -233,83 +212,25 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+
         FutureBuilder<String>(
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const CardComponent(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                      child: const Text('재시도'),
-                    ),
-                  ],
-                ),
-              );
+              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+              return wordCardComponent(jsons);
             } else if (snapshot.hasError) {
               debugPrint('Error : ${snapshot.error}');
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                      child: const Text('재시도'),
-                    ),
-                  ],
-                ),
-              );
+              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+
+              return wordCardComponent(jsons);
             } else {
               var jsons = jsonDecode(snapshot.data ??
                   '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
-              return CardComponent(
-                height: 150,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Text(
-                    //     '${jsons['eng_word']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
-                    // Text(
-                    //     '${jsons['kor_word']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
-                    // Text(
-                    //     '${jsons['person']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
+              return wordCardComponent(jsons);
 
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RichText(
-                        text: TextSpan(
-                          style: AppTypo(
-                                  typo: const SoyoMaple(),
-                                  fontColor: Colors.black,
-                                  fontWeight: FontWeight.w600)
-                              .body1,
-                          children: [
-                            TextSpan(text: '${jsons['eng_word']}'),
-                            TextSpan(text: '\n${jsons['kor_word']}'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text('- ${jsons['person']} -',
-                        style: AppTypo(
-                                typo: const SoyoMaple(),
-                                fontColor: Colors.black,
-                                fontWeight: FontWeight.w600)
-                            .body1),
-                  ],
-                ),
-              );
             }
           },
         ),
@@ -340,7 +261,106 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: setWeeklyStudyStatusWidget(context),
+                  children: [
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.done,
+                          color: context.color.tertiary,
+                        ),
+                        Text("일",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
+                        Text("월",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(
+                          Icons.done,
+                          color: context.color.tertiary,
+                        ),
+                        Text("화",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.pets,
+                          color: Colors.brown,
+                        ),
+                        Text("수",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.pets,
+                          color: Colors.brown,
+                        ),
+                        Text("목",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.pets,
+                          color: Colors.brown,
+                        ),
+                        Text("금",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.pets,
+                          color: Colors.brown,
+                        ),
+                        Text("토",
+                            style: AppTypo(
+                                    typo: const SoyoMaple(),
+                                    fontColor: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                .body2),
+                      ],
+                    ),
+                  ],
                 )
               ],
             ),

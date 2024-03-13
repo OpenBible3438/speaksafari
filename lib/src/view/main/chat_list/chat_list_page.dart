@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
@@ -29,11 +30,11 @@ class _ChatListPage extends State<ChatListPage> {
           ChatListViewModel(chatListService: ChatListService());
           provider.generateMockData();
           provider.fromFirestore().then((_) {
-          if (provider.tabs[0].isActive) {
-            provider.chatDtoList = provider.cusTomChatList;
-          } else {
-            provider.chatDtoList = provider.topicsChatList;
-          }});
+            if (provider.tabs[0].isActive) {
+              provider.chatDtoList = provider.cusTomChatList;
+            } else {
+              provider.chatDtoList = provider.topicsChatList;
+            }});
 
           return provider;
         },
@@ -41,7 +42,10 @@ class _ChatListPage extends State<ChatListPage> {
             builder: (context, provider, child) => Scaffold(
               backgroundColor: Color.fromARGB(255, 248, 248, 248),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                    Navigator.pushNamed(context, RoutePath.newchat);
+
+                },
                 child: Icon(
                   Icons.edit,
                   color: Colors.white,
@@ -110,9 +114,9 @@ class _ChatListPage extends State<ChatListPage> {
                       ),
                     )
                         :  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.chatDtoList.length,
-                      itemBuilder: (BuildContext context, int index) {
+                        shrinkWrap: true,
+                        itemCount: provider.chatDtoList.length,
+                        itemBuilder: (BuildContext context, int index) {
 
                           return Padding(
                             padding: const EdgeInsets.all(0.5),
@@ -120,13 +124,18 @@ class _ChatListPage extends State<ChatListPage> {
                               child: Container(
                                 child: GestureDetector(
                                   onTap: () {
-                                Navigator
-                                    .pushNamed(
-                                  context,
-                                  RoutePath.chatroom,
-                                  arguments: provider.chatDtoList[index]
-                                );
-                                provider.fromFirestore();
+                                    if (provider.chatDtoList[index].chatCtgr == "topics"){
+                                      provider.chatDtoList[index].chatUid = "${FirebaseAuth.instance.currentUser?.email}${DateTime.now()}";
+                                    provider.createFirestore(provider.chatDtoList[index]);
+                                    }
+                                    Navigator
+                                        .pushNamed(
+                                        context,
+                                        RoutePath.chatroom,
+                                        arguments: provider.chatDtoList[index]
+
+                                    );
+                                   // provider.fromFirestore();
                                   },
                                   child: CardComponent(
                                     child: Row(
