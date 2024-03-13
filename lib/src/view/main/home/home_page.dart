@@ -185,7 +185,10 @@ class _HomePageState extends State<HomePage> {
                 child: AnimatedTextKit(
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
-                    WavyAnimatedText('${ FirebaseAuth.instance.currentUser?.email}'),
+                    WavyAnimatedText(
+                        // 'huo'
+                        '${ FirebaseAuth.instance.currentUser?.email}'
+                        ''),
                   ],
                   isRepeatingAnimation: false,
                   onTap: () {
@@ -217,7 +220,7 @@ class _HomePageState extends State<HomePage> {
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CardComponent(child: CircularProgressIndicator());
+              return const CardComponent(child: Center(child: CircularProgressIndicator()));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
               return wordCardComponent(jsons);

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 
-class CardComponent extends ConsumerWidget {
+class CardComponent extends StatelessWidget {
   const CardComponent({
     super.key,
     required this.child,
@@ -17,7 +16,7 @@ class CardComponent extends ConsumerWidget {
   final double? height;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context ) {
     return Container(
       child: SizedBox(
         height: height,
@@ -27,7 +26,7 @@ class CardComponent extends ConsumerWidget {
             borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color: ref.context.color.primary,
+          color:  context.color.primary,
           child: child,
         ),
       ),
