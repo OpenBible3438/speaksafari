@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
@@ -184,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                 child: AnimatedTextKit(
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
-                    WavyAnimatedText('Tom Hanks'),
+                    WavyAnimatedText('${ FirebaseAuth.instance.currentUser?.email}'),
                   ],
                   isRepeatingAnimation: false,
                   onTap: () {
