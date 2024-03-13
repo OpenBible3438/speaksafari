@@ -29,11 +29,11 @@ class _ChatListPage extends State<ChatListPage> {
           ChatListViewModel(chatListService: ChatListService());
           provider.generateMockData();
           provider.fromFirestore().then((_) {
-          if (provider.tabs[0].isActive) {
-            provider.chatDtoList = provider.cusTomChatList;
-          } else {
-            provider.chatDtoList = provider.topicsChatList;
-          }});
+            if (provider.tabs[0].isActive) {
+              provider.chatDtoList = provider.cusTomChatList;
+            } else {
+              provider.chatDtoList = provider.topicsChatList;
+            }});
 
           return provider;
         },
@@ -41,7 +41,10 @@ class _ChatListPage extends State<ChatListPage> {
             builder: (context, provider, child) => Scaffold(
               backgroundColor: Color.fromARGB(255, 248, 248, 248),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                    Navigator.pushNamed(context, RoutePath.newchat);
+
+                },
                 child: Icon(
                   Icons.edit,
                   color: Colors.white,
@@ -110,9 +113,9 @@ class _ChatListPage extends State<ChatListPage> {
                       ),
                     )
                         :  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.chatDtoList.length,
-                      itemBuilder: (BuildContext context, int index) {
+                        shrinkWrap: true,
+                        itemCount: provider.chatDtoList.length,
+                        itemBuilder: (BuildContext context, int index) {
 
                           return Padding(
                             padding: const EdgeInsets.all(0.5),
@@ -120,13 +123,17 @@ class _ChatListPage extends State<ChatListPage> {
                               child: Container(
                                 child: GestureDetector(
                                   onTap: () {
-                                Navigator
-                                    .pushNamed(
-                                  context,
-                                  RoutePath.chatroom,
-                                  arguments: provider.chatDtoList[index]
-                                );
-                                provider.fromFirestore();
+                                    if (provider.chatDtoList[index].chatCtgr == "topics"){
+                                    provider.createFirestore(provider.chatDtoList[index]);
+                                    }
+                                    Navigator
+                                        .pushNamed(
+                                        context,
+                                        RoutePath.chatroom,
+                                        arguments: provider.chatDtoList[index]
+
+                                    );
+                                   // provider.fromFirestore();
                                   },
                                   child: CardComponent(
                                     child: Row(
@@ -149,7 +156,11 @@ class _ChatListPage extends State<ChatListPage> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    'category',
+                                                    provider
+                                                        .chatDtoList[
+                                                    index]
+                                                        .chatCtgr ??
+                                                        '',
                                                     style: TextStyle(
                                                         fontSize: 13),
                                                   ),
@@ -159,7 +170,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      'AI ${provider.chatDtoList[index].ai_role}' ??
+                                                      'AI ${provider.chatDtoList[index].aIRole}' ??
                                                           '',
                                                       style: TextStyle(
                                                           fontSize: 10,
@@ -170,7 +181,7 @@ class _ChatListPage extends State<ChatListPage> {
                                               ),
                                               Text(
                                                 provider.chatDtoList[index]
-                                                    .chat_content ??
+                                                    .chatNm ??
                                                     '',
                                                 style:
                                                 TextStyle(fontSize: 13),
@@ -184,7 +195,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      '나 ${provider.chatDtoList[index].user_role}' ??
+                                                      '나 ${provider.chatDtoList[index].usrRole}' ??
                                                           '',
                                                       style: TextStyle(
                                                           fontSize: 10,
