@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/theme/component/asset_icon.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
@@ -9,13 +12,57 @@ import 'package:speak_safari/theme/component/card/vertical_card.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
 import 'package:speak_safari/theme/res/typo.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
   });
 
   @override
+  State<StatefulWidget> createState() => _HomePageState();
+
+}
+class _HomePageState extends State<HomePage> {
+  late Future<String>? getWordFuture;
+
+  late final GenerativeModel _model =
+  GenerativeModel(model: "gemini-pro", apiKey: _apiKey);
+  static const _apiKey = String.fromEnvironment("API_KEY");
+
+  Future<String> getWord() async {
+    String responseData = "";
+
+    try {
+      final content = [
+        Content.text('유효한 필드는 영어 문장, 한글 해석, 인물 이고 1개의 문장만 필요해 '
+            '출력 형태: {"eng_word": "~~", "kor_word" : "~~", "person" : "~~ "} '
+            '~~은 명언을 작성해 Json 형태로 보내줘'
+        )
+      ];
+      final response = await _model.generateContent(content);
+      responseData = response.text ?? "";
+    } catch (e) {
+      debugPrint('Fail to getWord $e');
+    }
+    return responseData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getWordFuture = getWord();
+  }
+
+  void reloadData() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        getWordFuture = getWord();
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     // TODO: implement build
@@ -49,6 +96,96 @@ class HomePage extends StatelessWidget {
         const Spacer(flex: 1
           ,)
         ,
+
+        Padding(
+          padding: EdgeInsets.only(left: width * 0.1),
+          child:  Row(
+            children: [
+              Text("오늘의 명언",
+                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
+              ),
+            ],
+          ),
+        ),
+        FutureBuilder<String>(
+          future: getWordFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+                      child: const Text('재시도'),
+                    ),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              debugPrint('Error : ${snapshot.error}');
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+                      child: const Text('재시도'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              var jsons = jsonDecode(snapshot.data ?? '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+              return CardComponent(
+                height: 150,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Text(
+                    //     '${jsons['eng_word']}',
+                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
+                    // ),
+                    // Text(
+                    //     '${jsons['kor_word']}',
+                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
+                    // ),
+                    // Text(
+                    //     '${jsons['person']}',
+                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
+                    // ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        text: TextSpan(
+                          style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body1,
+                          children: [
+                             TextSpan(text: '${jsons['eng_word']}'),
+                             TextSpan(text: '\n${jsons['kor_word']}'),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                    Text(
+                        '- ${jsons['person']} -',
+                        style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body1
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+
+        const Spacer(flex: 1
+          ,)
+        ,
+
         Padding(
           padding: EdgeInsets.only(left: width * 0.1),
           child:  Row(
@@ -307,52 +444,7 @@ class HomePage extends StatelessWidget {
         const Spacer(flex: 1
           ,)
         ,
-        Padding(
-          padding: EdgeInsets.only(left: width * 0.1),
-          child:  Row(
-            children: [
-              Text("단어 Quiz",
-                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).headline3
-              ),
-            ],
-          ),
-        ),
-        CardComponent(
-          child: Column(
-            children: [
-              const Spacer(),
-              Text(
-                '"아슬아슬했어"',
-                  style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body1
-              ),
-              RichText(
-                text: TextSpan(
-                    style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body3,
-                  children: [
-                    const TextSpan(text: 'That was a '),
-                    WidgetSpan(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          '                     ',
-                          style: TextStyle(backgroundColor: Colors.transparent),
-                        ),
-                      ),
-                    ),
-                    const TextSpan(text: '. We almost hit that car!'),
-                  ],
-                ),
-              ),
-              const Spacer(),
-            ],
-          ),
-        ),
-        const Spacer(flex: 1
-          ,)
-        ,
+
 
       ],
     );
