@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 
-class VerticalCardComponent extends ConsumerWidget {
+class VerticalCardComponent extends StatelessWidget {
   const VerticalCardComponent({
     super.key,
     required this.child,
@@ -15,18 +14,17 @@ class VerticalCardComponent extends ConsumerWidget {
   final bool? isRoundAll;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return  Container(
+  Widget build(BuildContext context) {
+    return Container(
       child: SizedBox(
         height: 160,
         width: MediaQuery.of(context).size.width * 0.3,
         child: Card(
           shape: ContinuousRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color: ref.context.color.tertiary,
+          color: context.color.tertiary,
           child: child,
         ),
       ),
