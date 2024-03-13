@@ -186,7 +186,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                           return SizedBox.shrink();
                         }
                         final text =
-                            content.parts.whereType<TextPart>().map((part) {
+                        content.parts.whereType<TextPart>().map((part) {
                           var jsonString = part.text;
 
                           if (allMessages.isEmpty) {
@@ -194,7 +194,7 @@ class _ChatroomState extends State<ChatRoomPage> {
 
                             if (index % 2 == 1) {
                               Map<String, dynamic> user =
-                                  jsonDecode(jsonString);
+                              jsonDecode(jsonString);
                               speakText = user['chat_content'];
                               return "${speakText} \n한글 번역 : ${user['chat_trans']}";
                             } else {
@@ -207,7 +207,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                           } else {
                             if (jsonString.startsWith('{')) {
                               Map<String, dynamic> user =
-                                  jsonDecode(jsonString);
+                              jsonDecode(jsonString);
                               speakText = user['chat_content'];
                               return "${speakText} \n한글 번역 : ${user['chat_trans']}";
                             } else if (jsonString.startsWith('유효한')) {
@@ -270,12 +270,12 @@ class _ChatroomState extends State<ChatRoomPage> {
                                     });
                                   },
                                   iconSize:
-                                      MediaQuery.of(context).size.width * 0.1,
+                                  MediaQuery.of(context).size.width * 0.1,
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         context.color.primary),
                                     iconColor:
-                                        MaterialStateProperty.all(Colors.green),
+                                    MaterialStateProperty.all(Colors.green),
                                   ),
                                   icon: const Icon(
                                     Icons.send_rounded,
@@ -314,8 +314,8 @@ class _ChatroomState extends State<ChatRoomPage> {
                                     IconButton.filled(
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white),
+                                        MaterialStateProperty.all(
+                                            Colors.white),
                                         iconColor: MaterialStateProperty.all(
                                             Colors.black),
                                         elevation: MaterialStateProperty.all(5),
@@ -343,62 +343,62 @@ class _ChatroomState extends State<ChatRoomPage> {
                                             filled: true,
                                             //<-- SEE HERE
                                             fillColor:
-                                                Colors.green.withAlpha(90),
+                                            Colors.green.withAlpha(90),
                                             //<-- SEE HERE
                                             suffixIcon: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.green),
+                                                  MaterialStateProperty.all(
+                                                      Colors.green),
                                                   iconColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
                                                 ),
                                                 onPressed: isLoading
                                                     ? null
                                                     : () {
-                                                        if (!isLoading) {
-                                                          _sendMessage(
-                                                              _textController
-                                                                  .text);
-                                                        }
-                                                      },
+                                                  if (!isLoading) {
+                                                    _sendMessage(
+                                                        _textController
+                                                            .text);
+                                                  }
+                                                },
                                                 icon: const Icon(Icons.send),
                                               ),
                                             ),
                                             enabledBorder:
-                                                const OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                40.0)),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.white,
-                                                        style:
-                                                            BorderStyle.none)),
+                                            const OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        40.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.white,
+                                                    style:
+                                                    BorderStyle.none)),
                                             disabledBorder:
-                                                const OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                40.0)),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.white,
-                                                        style:
-                                                            BorderStyle.none)),
+                                            const OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        40.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.white,
+                                                    style:
+                                                    BorderStyle.none)),
                                             focusedBorder:
-                                                const OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                40.0)),
-                                                    borderSide: BorderSide(
-                                                        color: Colors.white,
-                                                        style:
-                                                            BorderStyle.none)),
+                                            const OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        40.0)),
+                                                borderSide: BorderSide(
+                                                    color: Colors.white,
+                                                    style:
+                                                    BorderStyle.none)),
                                             border: const OutlineInputBorder(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(40.0)),
@@ -413,26 +413,26 @@ class _ChatroomState extends State<ChatRoomPage> {
                                       Expanded(
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                          MainAxisAlignment.spaceEvenly,
                                           children: [
                                             if (!isIntervalOpen)
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.green),
+                                                  MaterialStateProperty.all(
+                                                      Colors.green),
                                                   iconColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
                                                     if (isSpeechRateSetting) {
                                                       isSpeechRateSetting =
-                                                          false;
+                                                      false;
                                                     } else {
                                                       isSpeechRateSetting =
-                                                          true;
+                                                      true;
                                                     }
                                                   });
                                                 },
@@ -447,13 +447,13 @@ class _ChatroomState extends State<ChatRoomPage> {
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          isRepeat
-                                                              ? Colors.green
-                                                              : Colors.grey),
+                                                  MaterialStateProperty.all(
+                                                      isRepeat
+                                                          ? Colors.green
+                                                          : Colors.grey),
                                                   iconColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
                                                 ),
                                                 onPressed: () async {
                                                   setState(() {
@@ -472,13 +472,13 @@ class _ChatroomState extends State<ChatRoomPage> {
                                               IconButton.filled(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          isIntervalOpen
-                                                              ? Colors.green
-                                                              : Colors.grey),
+                                                  MaterialStateProperty.all(
+                                                      isIntervalOpen
+                                                          ? Colors.green
+                                                          : Colors.grey),
                                                   iconColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
@@ -496,22 +496,22 @@ class _ChatroomState extends State<ChatRoomPage> {
                                             if (isIntervalOpen)
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
+                                                MainAxisAlignment
+                                                    .spaceAround,
                                                 children: [
                                                   IconButton(
                                                     style: ButtonStyle(
                                                       backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(isInterval >
-                                                                      1
-                                                                  ? Colors.green
-                                                                  : Colors
-                                                                      .grey),
+                                                      MaterialStateProperty
+                                                          .all(isInterval >
+                                                          1
+                                                          ? Colors.green
+                                                          : Colors
+                                                          .grey),
                                                       iconColor:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                                  Colors.white),
+                                                      MaterialStateProperty
+                                                          .all(
+                                                          Colors.white),
                                                     ),
                                                     onPressed: () {
                                                       setState(() {
@@ -526,49 +526,49 @@ class _ChatroomState extends State<ChatRoomPage> {
                                                   Card(
                                                     shape: const ContinuousRectangleBorder(
                                                         borderRadius:
-                                                            BorderRadiusDirectional.only(
-                                                                topEnd: Radius
-                                                                    .circular(
-                                                                        5),
-                                                                topStart: Radius
-                                                                    .circular(
-                                                                        5),
-                                                                bottomEnd: Radius
-                                                                    .circular(
-                                                                        5),
-                                                                bottomStart: Radius
-                                                                    .circular(
-                                                                        5))),
+                                                        BorderRadiusDirectional.only(
+                                                            topEnd: Radius
+                                                                .circular(
+                                                                5),
+                                                            topStart: Radius
+                                                                .circular(
+                                                                5),
+                                                            bottomEnd: Radius
+                                                                .circular(
+                                                                5),
+                                                            bottomStart: Radius
+                                                                .circular(
+                                                                5))),
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
+                                                      const EdgeInsets.all(
+                                                          8.0),
                                                       child: Text("$isInterval",
                                                           style: AppTypo(
-                                                                  typo:
-                                                                      const SoyoMaple(),
-                                                                  fontColor:
-                                                                      Colors
-                                                                          .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600)
+                                                              typo:
+                                                              const SoyoMaple(),
+                                                              fontColor:
+                                                              Colors
+                                                                  .black,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w600)
                                                               .headline2),
                                                     ),
                                                   ),
                                                   IconButton(
                                                     style: ButtonStyle(
                                                       backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(isInterval <
-                                                                      10
-                                                                  ? Colors.green
-                                                                  : Colors
-                                                                      .grey),
+                                                      MaterialStateProperty
+                                                          .all(isInterval <
+                                                          10
+                                                          ? Colors.green
+                                                          : Colors
+                                                          .grey),
                                                       iconColor:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                                  Colors.white),
+                                                      MaterialStateProperty
+                                                          .all(
+                                                          Colors.white),
                                                     ),
                                                     onPressed: () {
                                                       setState(() {
@@ -705,11 +705,11 @@ class _ChatroomState extends State<ChatRoomPage> {
 
     final response = await _chatSession.sendMessage(Content.text(
         '유효한 필드는 채팅 시간, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 ,상황은  ${widget.chatDto?.chatNm} 이고, 너의 역할은 "${widget.chatDto?.aIRole}", 나의 역할은 ${widget.chatDto?.usrRole}, 번역 내용 은 한국어로 출력,'
-        '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
-        '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-        '   상황극: ${widget.chatDto?.chatNm} '
-        '"user_chat_content"'
-        ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
+            '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
+            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chatNm} '
+            '"user_chat_content"'
+            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
 
     print("check error");
     print(response.text);

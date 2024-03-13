@@ -73,7 +73,42 @@ class _HomePageState extends State<HomePage> {
       todayWordRate = rate;
     });
   }
+  Widget wordCardComponent(jsons) {
+   return  CardComponent(
+      height: 180,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
 
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RichText(
+                text: TextSpan(
+                  style: AppTypo(
+                      typo: const SoyoMaple(),
+                      fontColor: Colors.black,
+                      fontWeight: FontWeight.w600)
+                      .body2,
+                  children: [
+                    TextSpan(text: '${jsons['eng_word']}'),
+                    TextSpan(text: '\n${jsons['kor_word']}'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Text('- ${jsons['person']} -',
+              style: AppTypo(
+                  typo: const SoyoMaple(),
+                  fontColor: Colors.black,
+                  fontWeight: FontWeight.w600)
+                  .body1),
+        ],
+      ),
+    );
+  }
   // 단어 퀴즈 Row Widget
   Widget setTodayWordRateWidget() {
     if (todayWordRate > 9) {
@@ -130,7 +165,8 @@ class _HomePageState extends State<HomePage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     // TODO: implement build
-    return Column(
+    return 
+      Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -175,83 +211,25 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+
         FutureBuilder<String>(
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const CardComponent(child: CircularProgressIndicator());
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                      child: const Text('재시도'),
-                    ),
-                  ],
-                ),
-              );
+              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+              return wordCardComponent(jsons);
             } else if (snapshot.hasError) {
               debugPrint('Error : ${snapshot.error}');
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
-                      child: const Text('재시도'),
-                    ),
-                  ],
-                ),
-              );
+              var jsons = jsonDecode('{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
+
+              return wordCardComponent(jsons);
             } else {
               var jsons = jsonDecode(snapshot.data ??
                   '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
-              return CardComponent(
-                height: 150,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Text(
-                    //     '${jsons['eng_word']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
-                    // Text(
-                    //     '${jsons['kor_word']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
-                    // Text(
-                    //     '${jsons['person']}',
-                    //     style: AppTypo(typo: const SoyoMaple(), fontColor: Colors.black, fontWeight: FontWeight.w600).body4
-                    // ),
+              return wordCardComponent(jsons);
 
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RichText(
-                        text: TextSpan(
-                          style: AppTypo(
-                                  typo: const SoyoMaple(),
-                                  fontColor: Colors.black,
-                                  fontWeight: FontWeight.w600)
-                              .body1,
-                          children: [
-                            TextSpan(text: '${jsons['eng_word']}'),
-                            TextSpan(text: '\n${jsons['kor_word']}'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text('- ${jsons['person']} -',
-                        style: AppTypo(
-                                typo: const SoyoMaple(),
-                                fontColor: Colors.black,
-                                fontWeight: FontWeight.w600)
-                            .body1),
-                  ],
-                ),
-              );
             }
           },
         ),
