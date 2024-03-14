@@ -665,8 +665,6 @@ class _ChatroomState extends State<ChatRoomPage> {
           sfa.indexOf('}') + 1);
       Map<String, dynamic> user = jsonDecode(second ?? "");
 
-      print("-----------test");
-      print(second);
       MessageDto messageDto = MessageDto();
       messageDto.chatUid = widget.chatDto?.chatUid;
       messageDto.chatSpeaker = "me";
