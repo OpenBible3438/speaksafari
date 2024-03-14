@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
     if (todayWordRate > 9) {
       // 10개 모두 끝냈을 때
       return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -143,10 +143,6 @@ class _HomePageState extends State<HomePage> {
                         fontColor: Colors.black,
                         fontWeight: FontWeight.w400)
                     .body1),
-          ),
-          const Icon(
-            Icons.pets,
-            color: Colors.brown,
           ),
         ],
       );
@@ -168,11 +164,6 @@ class _HomePageState extends State<HomePage> {
                       fontColor: Colors.black,
                       fontWeight: FontWeight.w400)
                   .body1),
-          const SizedBox(width: 10),
-          const Icon(
-            Icons.pets,
-            color: Colors.brown,
-          ),
         ],
       );
     }
@@ -274,7 +265,8 @@ class _HomePageState extends State<HomePage> {
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CardComponent(child: Center(child: CircularProgressIndicator()));
+              return const CardComponent(
+                  child: Center(child: CircularProgressIndicator()));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               var jsons = jsonDecode(
                   '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
