@@ -418,13 +418,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(left: 0),
                                 child: Text("Weekly Ranking",
                                     style: AppTypo(
                                             typo: const SoyoMaple(),
                                             fontColor: Colors.black,
                                             fontWeight: FontWeight.w600)
-                                        .subtitle2),
+                                        .body1),
                               ),
                             ],
                           ),
