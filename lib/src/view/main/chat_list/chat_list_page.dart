@@ -21,21 +21,60 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPage extends State<ChatListPage> {
+
   int currentPage = 1;
+  final provider =
+  ChatListViewModel(chatListService: ChatListService());
+
+  List<ChatDto> chatlist = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    provider.fromFirestore();
+    print('Widget reappeared hihihi');
+  }
+  @override
+  void initState() {
+    super.initState();
+    print('Widget reappeared hihihi');
+  }
+
+
+  void listHandler() {
+    print('Function executed on return from Screen B');
+    provider.fromFirestore();
+    provider.chatDtoList = provider.cusTomChatList;
+
+
+    setState(() {
+      provider.fromFirestore();
+      chatlist = provider.cusTomChatList;
+    });
+    provider.notifyListeners();
+  }
+
+  setState(() {
+  chatlist = provider.cusTomChatList;
+  });
+
+
+
+
 
   /// 파이어베이스에서 채팅방 목록 불러오기
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) {
-          final provider =
-          ChatListViewModel(chatListService: ChatListService());
+          // final provider =
+          // ChatListViewModel(chatListService: ChatListService());
           provider.generateMockData();
           provider.fromFirestore().then((_) {
             if (provider.tabs[0].isActive) {
-              provider.chatDtoList = provider.cusTomChatList;
+              chatlist = provider.cusTomChatList;
             } else {
-              provider.chatDtoList = provider.topicsChatList;
+              chatlist = provider.topicsChatList;
             }});
 
           return provider;
@@ -45,7 +84,7 @@ class _ChatListPage extends State<ChatListPage> {
               backgroundColor: Color.fromARGB(255, 248, 248, 248),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                    Navigator.pushNamed(context, RoutePath.newchat);
+                    Navigator.pushNamed(context, RoutePath.newchat,arguments: listHandler);
 
                 },
                 child: Icon(
@@ -107,7 +146,7 @@ class _ChatListPage extends State<ChatListPage> {
 
                   Expanded(
 
-                    child: provider.chatDtoList.isEmpty == true
+                    child: chatlist.isEmpty == true
                         ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +159,7 @@ class _ChatListPage extends State<ChatListPage> {
                     )
                         :  ListView.builder(
                         shrinkWrap: true,
-                        itemCount: provider.chatDtoList.length,
+                        itemCount: chatlist.length,
                         itemBuilder: (BuildContext context, int index) {
 
                           return Padding(
@@ -132,7 +171,7 @@ class _ChatListPage extends State<ChatListPage> {
                                     if (provider.chatDtoList[index].chatCtgr == "topics"){
                                       print("탭탭탭메뉴");
 
-                                    provider.createFirestore(provider.chatDtoList[index]);
+                                    provider.createFirestore(chatlist[index]);
                                     }
                                     Navigator
                                         .pushNamed(
@@ -164,11 +203,7 @@ class _ChatListPage extends State<ChatListPage> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    provider
-                                                        .chatDtoList[
-                                                    index]
-                                                        .chatCtgr ??
-                                                        '',
+                                                    chatlist.length.toString(),
                                                     style:                           AppTypo(
                                                         typo: const SoyoMaple(),
                                                         fontColor: Colors.black,
@@ -184,7 +219,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      'AI ${provider.chatDtoList[index].aIRole}' ??
+                                                      'AI ${chatlist[index].aIRole}' ??
                                                           '',
                                                       style:                           AppTypo(
                                                           typo: const SoyoMaple(),
@@ -196,7 +231,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                 ],
                                               ),
                                               Text(
-                                                provider.chatDtoList[index]
+                                                chatlist[index]
                                                     .chatNm ??
                                                     '',
                                                 style:
@@ -215,7 +250,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     const EdgeInsets.only(
                                                         right: 8),
                                                     child: Text(
-                                                      '나 ${provider.chatDtoList[index].usrRole}' ??
+                                                      '나 ${chatlist[index].usrRole}' ??
                                                           '',
                                                       style:                           AppTypo(
                                                           typo: const SoyoMaple(),

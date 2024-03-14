@@ -114,6 +114,7 @@ class ChatListViewModel extends BaseViewModel {
         "usr_role" : chatDto.usrRole,
       } ,);
 
+    fromFirestore();
   }
 
   Future<List<ChatDto>> fromFirestore() async {

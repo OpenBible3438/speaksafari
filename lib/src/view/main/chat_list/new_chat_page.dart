@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:speak_safari/src/service/chat_list_service.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
@@ -8,8 +10,9 @@ import 'package:speak_safari/theme/component/card/textfield_card.dart';
 import 'package:speak_safari/util/route_path.dart';
 
 class NewChatPage extends StatefulWidget {
-  const NewChatPage({super.key});
+  const NewChatPage({super.key, required this.listFunc});
 
+  final Function() listFunc;
   @override
   State<NewChatPage> createState() => _NewChatPageState();
 }
@@ -30,8 +33,17 @@ class _NewChatPageState extends State<NewChatPage> {
   }
 
   @override
+  void disPose() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+
+    return ChangeNotifierProvider(
+        create: (context) => ChatListViewModel(chatListService: ChatListService()), // ChatListViewModel을 제공합니다.
+    child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           centerTitle: true,
@@ -72,7 +84,7 @@ class _NewChatPageState extends State<NewChatPage> {
                     text: "대화 시작하기",
                     backgroundColor: context.color.tertiary,
                     width: MediaQuery.of(context).size.width * 0.8,
-                    onPressed: () {
+                    onPressed: () async {
                       ChatDto newChatDto = ChatDto(
                           chatNm: titleController.text,
                           chatCtt: subjectController.text,
@@ -83,15 +95,18 @@ class _NewChatPageState extends State<NewChatPage> {
                           usrEmail: FirebaseAuth.instance.currentUser?.email
                       );
 
-                      createFirestore2(newChatDto);
+                     await createFirestore2(newChatDto);
+                      //final chatListViewModel = Provider.of<ChatListViewModel>(context, listen: false);
 
 
+                      widget.listFunc();
                       Navigator.popAndPushNamed(context, RoutePath.chatroom, arguments: newChatDto);
+
                     },
                   ),
                 ],
               ),
-            )));
+            ))));
   }
 
   Future<void> createFirestore2(ChatDto chatDto) async {
@@ -105,6 +120,7 @@ class _NewChatPageState extends State<NewChatPage> {
         "usr_email": FirebaseAuth.instance.currentUser?.email,
         "usr_role" : chatDto.usrRole,
       } ,);
+
 
   }
 
