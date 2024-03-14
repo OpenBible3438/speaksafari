@@ -14,7 +14,7 @@ class SmallHorCardComponent extends StatelessWidget {
   final bool? isRoundAll;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context ) {
     return Container(
       child: SizedBox(
         height: 80,

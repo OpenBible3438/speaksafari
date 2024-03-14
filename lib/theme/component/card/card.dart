@@ -16,6 +16,7 @@ class CardComponent extends StatelessWidget {
   final double? height;
 
   @override
+
   Widget build(BuildContext context) {
     return Container(
       child: SizedBox(

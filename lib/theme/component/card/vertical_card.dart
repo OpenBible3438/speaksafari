@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:speak_safari/src/service/theme_service.dart';
+
+
 
 class VerticalCardComponent extends StatelessWidget {
   const VerticalCardComponent({
@@ -13,7 +16,6 @@ class VerticalCardComponent extends StatelessWidget {
   final EdgeInsets? padding;
   final bool? isRoundAll;
 
-  @override
   Widget build(BuildContext context) {
     return Container(
       child: SizedBox(
@@ -24,7 +26,7 @@ class VerticalCardComponent extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color: context.color.tertiary,
+          color:  context.color.tertiary,
           child: child,
         ),
       ),

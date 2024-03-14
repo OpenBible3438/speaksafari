@@ -16,7 +16,7 @@ abstract class RoutePath {
     late final Widget page;
     switch (settings.name) {
       case RoutePath.main:
-        page = const MainPage();
+        page = MainPage();
         break;
       case RoutePath.login:
         page = const LoginPage();

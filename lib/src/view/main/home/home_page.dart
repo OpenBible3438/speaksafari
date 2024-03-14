@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
     if (todayWordRate > 9) {
       // 10개 모두 끝냈을 때
       return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -144,36 +144,26 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.w400)
                     .body1),
           ),
-          const Icon(
-            Icons.pets,
-            color: Colors.brown,
-          ),
         ],
       );
     } else {
       // 단어 퀴즈 남았을 때
       return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('$todayWordRate / 10',
               style: AppTypo(
                       typo: const SoyoMaple(),
                       fontColor: Colors.black,
                       fontWeight: FontWeight.w600)
-                  .headline2),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text("  진행중!",
-                style: AppTypo(
-                        typo: const SoyoMaple(),
-                        fontColor: Colors.black,
-                        fontWeight: FontWeight.w400)
-                    .body1),
-          ),
-          const Icon(
-            Icons.pets,
-            color: Colors.brown,
-          ),
+                  .headline5),
+          const SizedBox(width: 10),
+          Text("진행중!",
+              style: AppTypo(
+                      typo: const SoyoMaple(),
+                      fontColor: Colors.black,
+                      fontWeight: FontWeight.w400)
+                  .body1),
         ],
       );
     }
@@ -244,6 +234,7 @@ class _HomePageState extends State<HomePage> {
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
                     WavyAnimatedText(
+
                         '${FirebaseAuth.instance.currentUser?.email}'),
                   ],
                   isRepeatingAnimation: false,
@@ -275,7 +266,8 @@ class _HomePageState extends State<HomePage> {
           future: getWordFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CardComponent(child: Center(child: CircularProgressIndicator()));
+              return const CardComponent(
+                  child: Center(child: CircularProgressIndicator()));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               var jsons = jsonDecode(
                   '{"eng_word": "The only thing we have to fear is fear itself.", "kor_word" : "우리가 두려워해야 할 유일한 것은 두려움 그 자체이다.", "person" : "Franklin D. Roosevelt"}');
@@ -310,9 +302,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "chatroom");
-          },
           child: CardComponent(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
