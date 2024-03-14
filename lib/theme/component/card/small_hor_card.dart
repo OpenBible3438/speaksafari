@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
- 
 import 'package:speak_safari/src/service/theme_service.dart';
 
-class SmallHorCardComponent extends  StatelessWidget {
+class SmallHorCardComponent extends StatelessWidget {
   const SmallHorCardComponent({
     super.key,
     required this.child,
@@ -25,7 +24,7 @@ class SmallHorCardComponent extends  StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color:  context.color.primary,
+          color: context.color.primary,
           child: child,
         ),
       ),

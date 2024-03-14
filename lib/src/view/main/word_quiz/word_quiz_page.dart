@@ -137,7 +137,7 @@ class _WordQuizPageState extends State<WordQuizPage> {
         backgroundColor: context.color.tertiary,
         width: MediaQuery.of(context).size.width * 0.8,
         onPressed: () {
-          showOverlay(context, true);
+          showOverlay(context, isCorrect);
           _updateTodayWordRate();
           if (isCorrect) {
             // 정답 BottomSheet
@@ -261,9 +261,22 @@ class _WordQuizPageState extends State<WordQuizPage> {
   @override
   Widget build(BuildContext context) {
     if (todayWordRate > 9) {
-      return const Scaffold(
-        body: Center(
-          child: Text('내일 봐요~'),
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(
+              image: AssetImage('assets/images/lion_byebye.png'),
+            ),
+            Text(
+              'See you Tomorrow!',
+              style: TextStyle(
+                fontFamily: 'soyo_maple',
+                fontWeight: FontWeight.w600,
+                fontSize: 30,
+              ),
+            ),
+          ],
         ),
       );
     } else {

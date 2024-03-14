@@ -16,7 +16,8 @@ class CardComponent extends StatelessWidget {
   final double? height;
 
   @override
-  Widget build(BuildContext context ) {
+
+  Widget build(BuildContext context) {
     return Container(
       child: SizedBox(
         height: height,
@@ -26,7 +27,7 @@ class CardComponent extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
           ),
           elevation: 4.0,
-          color:  context.color.primary,
+          color: context.color.primary,
           child: child,
         ),
       ),
