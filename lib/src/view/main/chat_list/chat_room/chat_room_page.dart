@@ -12,6 +12,7 @@ import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_room/chat_message_widget.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
 import 'package:speak_safari/theme/res/typo.dart';
+import 'package:speak_safari/util/route_path.dart';
 
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({super.key, this.chatDto});
@@ -49,7 +50,7 @@ class _ChatroomState extends State<ChatRoomPage> {
   List<MessageDto> allMessages = [];
 
 
-  static const _apiKey = 'AIzaSyA_rr7LwS88CpiYgSpPIAEqnWM3MwBZUmU';
+  static const _apiKey = const String.fromEnvironment("API_KEY");
 
   @override
   void initState() {
@@ -132,6 +133,10 @@ class _ChatroomState extends State<ChatRoomPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, RoutePath.main, (router) => false);
+
+          }, icon: Icon(Icons.arrow_back)),
           title: AnimatedTextKit(
             animatedTexts: [
               ColorizeAnimatedText(
@@ -624,13 +629,12 @@ class _ChatroomState extends State<ChatRoomPage> {
     service.saveMessage(widget.chatDto?.chatNm ?? '', messageDto);
 
     final response = await _chatSession.sendMessage(Content.text(
-        'Valid fields are subject, chat time, conversation content, my words, translation content, your role, and my role. Chat time is the current time, conversation content is in English, and the situation is ${widget.chatDto?.chatNm} and your role is"${widget.chatDto?.aIRole}" and my role is ${widget.chatDto?.usrRole}, The translation will be printed in Korean'
-        'Output type: {"chat_time": "Make the present time this way and put it in'
-        '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_topic" : "${widget.chatDto?.chatCtt}",'
-            '"chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-        '   상황극: ${widget.chatDto?.chatNm} '
-        '"user_chat_content"'
-        ' Look at the contents of and print out a word that fits the following situation and send it in Json format:'));
+        '유효한 필드는 채팅 시간, 주제, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 ,상황은  ${widget.chatDto?.chatNm} 이고, 너의 역할은 "${widget.chatDto?.aIRole}", 나의 역할은 ${widget.chatDto?.usrRole}, 번역 내용 은 한국어로 출력,'
+            '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
+            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_topic" : "${widget.chatDto?.chatCtt}" ,"chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
+            '   상황극: ${widget.chatDto?.chatNm} '
+            '"user_chat_content"'
+            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
 
     print(response.text);
 

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
+import 'package:speak_safari/src/view/main/chat_list/new_chat_page.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/util/route_path.dart';
 import 'package:speak_safari/theme/res/typo.dart';
@@ -22,8 +23,13 @@ class _ChatListPage extends State<ChatListPage> {
   int currentPage = 1;
   List<String> allMessages = [];
   /// 파이어베이스에서 채팅방 목록 불러오기
+
   @override
   Widget build(BuildContext context) {
+    print("=-===========================");
+    print("build 실행ㄱ");
+    print("=-===========================");
+
     return ChangeNotifierProvider(
         create: (context) {
           final provider =
@@ -43,8 +49,8 @@ class _ChatListPage extends State<ChatListPage> {
               backgroundColor: Color.fromARGB(255, 248, 248, 248),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                    Navigator.pushNamed(context, RoutePath.newchat);
-
+                  Navigator.pushNamedAndRemoveUntil(context,
+                          RoutePath.newchat, (route) => false);
                 },
                 child: Icon(
                   Icons.edit,
