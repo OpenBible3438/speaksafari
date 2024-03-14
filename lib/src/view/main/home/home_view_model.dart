@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:speak_safari/src/view/base/base_view_model.dart';
 import 'package:speak_safari/src/view/main/word_quiz/word_quiz_view_model.dart';
 
 class HomeViewModel extends BaseViewModel {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String myEmail = FirebaseAuth.instance.currentUser!.email.toString();
+  String myUID = FirebaseAuth.instance.currentUser!.uid;
+
+  String thisWeekDate = '';
+  int weeklyCount = 0;
+
   // 주간 진도 상태
   Future<List<WeeklyDto>> getWeeklyStudyStatus() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
     QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
         .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.email)
+        .doc(myEmail)
         .collection('word')
         .get();
     List<WordDto> result =
@@ -18,6 +25,9 @@ class HomeViewModel extends BaseViewModel {
 
     List<DateTime> dates = getWeekDatesSunToSat();
     DateTime nowTime = DateTime.now();
+
+    // Rank
+    thisWeekDate = DateFormat('yyyyMMdd').format(dates[0]);
 
     List<WeeklyDto> weekly = [
       WeeklyDto(day: "일", date: ""),
@@ -42,6 +52,7 @@ class HomeViewModel extends BaseViewModel {
           bool isAllQuiz = false;
           if (dto.count! > 0) {
             isStudied = true;
+            weeklyCount += dto.count!;
             if (dto.count! > 9) {
               isAllQuiz = true;
             }
@@ -58,6 +69,53 @@ class HomeViewModel extends BaseViewModel {
     }
 
     return weekly;
+  }
+
+  Future<int> getMyWeeklyRank() async {
+    // Rank
+    List<UsersRankDto> usersRateList = [];
+    QuerySnapshot<Map<String, dynamic>> snapshot2 = await firestore
+        .collection("users_rate")
+        .doc(thisWeekDate)
+        // .doc('20240101')
+        .collection('users')
+        .get();
+    if (snapshot2.docs.isEmpty) {
+      // 이번주 데이터가 없는 경우 생성
+      await firestore
+          .collection('users_rate')
+          .doc('20240101')
+          .collection('users')
+          .doc()
+          .set({myUID: weeklyCount});
+      // data 재설정
+      snapshot2 = await firestore
+          .collection("users_rate")
+          // .doc(DateFormat('yyyyMMdd').format(dates[0]))
+          .doc('20240101')
+          .collection('users')
+          .get();
+    }
+    for (var doc in snapshot2.docs) {
+      var data = doc.data();
+      if (data.containsKey(myUID)) {
+        // Update data
+        await doc.reference.update({myUID: weeklyCount});
+      }
+      data.forEach((key, value) {
+        usersRateList.add(UsersRankDto(uid: key, rate: value));
+      });
+    }
+
+    usersRateList.sort((a, b) => b.rate.compareTo(a.rate)); // rate 기준 정렬
+    int myIndex = usersRateList.indexWhere((element) => element.uid == myUID);
+    if (myIndex != -1) {
+      debugPrint('내 순위 : ${myIndex + 1}등!');
+    } else {
+      debugPrint('아직 학습 데이터가 없습니다.');
+    }
+
+    return (myIndex + 1);
   }
 
   // 일 - 토 날짜 계산
@@ -81,6 +139,7 @@ class WeeklyDto {
   bool studied;
   bool isFuture;
   bool isAllQuiz;
+  int rank;
 
   WeeklyDto({
     required this.day,
@@ -88,5 +147,16 @@ class WeeklyDto {
     this.studied = false,
     this.isFuture = false,
     this.isAllQuiz = false,
+    this.rank = 0,
+  });
+}
+
+class UsersRankDto {
+  String uid;
+  int rate;
+
+  UsersRankDto({
+    required this.uid,
+    required this.rate,
   });
 }

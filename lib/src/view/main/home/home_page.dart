@@ -31,6 +31,9 @@ class _HomePageState extends State<HomePage> {
   late HomeViewModel homeViewModel;
   List<WeeklyDto> weeklyList = [];
 
+  // Rank
+  String myRank = '';
+
   late Future<String>? getWordFuture;
 
   late final GenerativeModel _model =
@@ -87,8 +90,10 @@ class _HomePageState extends State<HomePage> {
   // 진도 상태
   void _fetchWeeklyStudyStatus() async {
     List<WeeklyDto> list = await homeViewModel.getWeeklyStudyStatus();
+    int weeklyRank = await homeViewModel.getMyWeeklyRank();
     setState(() {
       weeklyList = list;
+      myRank = weeklyRank.toString();
     });
   }
 
@@ -234,7 +239,6 @@ class _HomePageState extends State<HomePage> {
                   animatedTexts: [
                     WavyAnimatedText('Hello, Welcome'),
                     WavyAnimatedText(
-
                         '${FirebaseAuth.instance.currentUser?.email}'),
                   ],
                   isRepeatingAnimation: false,
@@ -430,13 +434,13 @@ class _HomePageState extends State<HomePage> {
                               const Spacer(
                                 flex: 2,
                               ),
-                              Text("64",
+                              Text(myRank,
                                   style: AppTypo(
                                           typo: const SoyoMaple(),
                                           fontColor: Colors.black,
                                           fontWeight: FontWeight.w600)
                                       .headline2),
-                              Text("%",
+                              Text("등",
                                   style: AppTypo(
                                           typo: const SoyoMaple(),
                                           fontColor: Colors.black,
@@ -446,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                                 flex: 1,
                               ),
                               const Icon(
-                                Icons.sentiment_neutral,
+                                Icons.sentiment_satisfied_alt,
                                 color: Colors.black,
                               ),
                             ],
