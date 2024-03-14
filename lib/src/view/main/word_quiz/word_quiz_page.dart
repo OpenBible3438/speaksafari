@@ -143,7 +143,7 @@ class _WordQuizPageState extends State<WordQuizPage> {
             // 정답 BottomSheet
             showModalBottomSheet(
               context: context,
-              backgroundColor: Colors.green.withOpacity(0.5),
+              backgroundColor: const Color(0xFF608d65),
               builder: (BuildContext context) {
                 return Container(
                   margin: const EdgeInsets.all(20),
@@ -155,7 +155,10 @@ class _WordQuizPageState extends State<WordQuizPage> {
                           Icon(Icons.check_circle_outline),
                           Text(
                             '정답!',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'soyo_maple',
+                            ),
                           ),
                         ],
                       ),
@@ -181,7 +184,7 @@ class _WordQuizPageState extends State<WordQuizPage> {
           } else {
             // 오답 BottomSheet
             showModalBottomSheet(
-              backgroundColor: Colors.red.withOpacity(0.5),
+              backgroundColor: const Color(0xFFaf5a58),
               context: context,
               builder: (BuildContext context) {
                 return Container(
@@ -194,7 +197,10 @@ class _WordQuizPageState extends State<WordQuizPage> {
                           Icon(Icons.cancel_outlined),
                           Text(
                             '오답',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'soyo_maple',
+                            ),
                           ),
                         ],
                       ),
@@ -202,7 +208,10 @@ class _WordQuizPageState extends State<WordQuizPage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Answer : $correctString',
-                          style: const TextStyle(fontSize: 20),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'soyo_maple',
+                          ),
                         ),
                       ),
                       const SizedBox(
