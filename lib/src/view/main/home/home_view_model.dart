@@ -71,28 +71,27 @@ class HomeViewModel extends BaseViewModel {
     return weekly;
   }
 
+  // 주간 등수(Rank)
   Future<int> getMyWeeklyRank() async {
     // Rank
     List<UsersRankDto> usersRateList = [];
     QuerySnapshot<Map<String, dynamic>> snapshot2 = await firestore
         .collection("users_rate")
         .doc(thisWeekDate)
-        // .doc('20240101')
         .collection('users')
         .get();
     if (snapshot2.docs.isEmpty) {
       // 이번주 데이터가 없는 경우 생성
       await firestore
           .collection('users_rate')
-          .doc('20240101')
+          .doc(thisWeekDate)
           .collection('users')
           .doc()
           .set({myUID: weeklyCount});
       // data 재설정
       snapshot2 = await firestore
           .collection("users_rate")
-          // .doc(DateFormat('yyyyMMdd').format(dates[0]))
-          .doc('20240101')
+          .doc(thisWeekDate)
           .collection('users')
           .get();
     }
