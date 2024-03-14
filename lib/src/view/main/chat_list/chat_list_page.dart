@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speak_safari/src/service/chat_list_service.dart';
@@ -10,9 +7,8 @@ import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/util/route_path.dart';
 import 'package:speak_safari/theme/res/typo.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/theme/res/typo.dart';
 import 'package:speak_safari/util/route_path.dart';
-
-import '../../../../theme/res/typo.dart';
 
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
@@ -276,105 +272,3 @@ class _ChatListPage extends State<ChatListPage> {
                 )));
   }
 }
-
-BoxConstrains({required int minWidth, required int minHeight}) {}
-
-
-//  Expanded(
-//                                                   child: Column(
-//                                                     crossAxisAlignment:
-//                                                         CrossAxisAlignment
-//                                                             .start,
-//                                                     children: [
-//                                                       SizedBox(
-//                                                         height: 5,
-//                                                       ),
-//                                                       Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             provider
-//                                                                     .chatDtoList[
-//                                                                         index]
-//                                                                     .chatCtgr ??
-//                                                                 '',
-//                                                             style: AppTypo(
-//                                                                     typo:
-//                                                                         const SoyoMaple(),
-//                                                                     fontColor:
-//                                                                         Colors
-//                                                                             .black,
-//                                                                     fontWeight:
-//                                                                         FontWeight
-//                                                                             .w600)
-//                                                                 .body2,
-//                                                           ),
-//                                                           Spacer(),
-//                                                           Padding(
-//                                                             padding:
-//                                                                 const EdgeInsets
-//                                                                     .only(
-//                                                                     right: 8),
-//                                                             child: Text(
-//                                                               'AI ${provider.chatDtoList[index].aIRole}' ??
-//                                                                   '',
-//                                                               style: AppTypo(
-//                                                                       typo:
-//                                                                           const SoyoMaple(),
-//                                                                       fontColor:
-//                                                                           Colors
-//                                                                               .grey,
-//                                                                       fontWeight:
-//                                                                           FontWeight
-//                                                                               .w600)
-//                                                                   .body2,
-//                                                             ),
-//                                                           ),
-//                                                         ],
-//                                                       ),
-//                                                       Text(
-//                                                         provider
-//                                                                 .chatDtoList[
-//                                                                     index]
-//                                                                 .chatNm ??
-//                                                             '',
-//                                                         style: AppTypo(
-//                                                                 typo:
-//                                                                     const SoyoMaple(),
-//                                                                 fontColor:
-//                                                                     Colors
-//                                                                         .black,
-//                                                                 fontWeight:
-//                                                                     FontWeight
-//                                                                         .w600)
-//                                                             .body1,
-//                                                       ),
-//                                                       Row(
-//                                                         mainAxisAlignment:
-//                                                             MainAxisAlignment
-//                                                                 .end,
-//                                                         children: [
-//                                                           Padding(
-//                                                             padding:
-//                                                                 const EdgeInsets
-//                                                                     .only(
-//                                                                     right: 8),
-//                                                             child: Text(
-//                                                               '나 ${provider.chatDtoList[index].usrRole}' ??
-//                                                                   '',
-//                                                               style: AppTypo(
-//                                                                       typo:
-//                                                                           const SoyoMaple(),
-//                                                                       fontColor:
-//                                                                           Colors
-//                                                                               .grey,
-//                                                                       fontWeight:
-//                                                                           FontWeight
-//                                                                               .w600)
-//                                                                   .body2,
-//                                                             ),
-//                                                           ),
-//                                                         ],
-//                                                       ),
-//                                                     ],
-//                                                   ),
-//                                                 ),
