@@ -4,8 +4,11 @@ import 'package:speak_safari/src/view/main/home/home_page.dart';
 import 'package:speak_safari/src/view/main/word_quiz/word_quiz_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({
-    super.key,
+
+
+
+   MainPage( {
+    super.key
   });
 
   @override
@@ -15,6 +18,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   /* Bottom Tab Bar */
   int _selectedIndex = 0; // 현재 선택된 탭의 인덱스
+
+  _MainPageState(
+      // this._selectedIndex
+      );
+
   final List<String> _appBarTitle = ['Home', 'Chat', '단어 퀴즈'];
 
   // 각 탭에 해당하는 위젯 리스트

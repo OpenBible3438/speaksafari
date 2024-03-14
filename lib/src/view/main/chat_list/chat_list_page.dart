@@ -7,8 +7,6 @@ import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/util/route_path.dart';
 import 'package:speak_safari/theme/res/typo.dart';
 import 'package:speak_safari/theme/foundation/app_theme.dart';
-import 'package:speak_safari/theme/res/typo.dart';
-import 'package:speak_safari/util/route_path.dart';
 
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
@@ -25,8 +23,10 @@ class _ChatListPage extends State<ChatListPage> {
   late List<int> emoticons = emoticonsd.runes.toList();
 
   /// 파이어베이스에서 채팅방 목록 불러오기
+
   @override
   Widget build(BuildContext context) {
+
     emoticons.shuffle();
     return ChangeNotifierProvider(
         create: (context) {
@@ -45,19 +45,21 @@ class _ChatListPage extends State<ChatListPage> {
         },
         child: Consumer<ChatListViewModel>(
             builder: (context, provider, child) => Scaffold(
-                  backgroundColor: Color.fromARGB(255, 248, 248, 248),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, RoutePath.newchat);
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: context.color.onTertiary,
-                  ),
-                  body: Column(
-                    children: [
+
+              backgroundColor: Color.fromARGB(255, 248, 248, 248),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(context,
+                          RoutePath.newchat, (route) => false);
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+                backgroundColor: context.color.onTertiary,
+              ),
+              body: Column(
+                children: [
                       SizedBox(
                         height: 80,
                       ),
@@ -194,60 +196,68 @@ class _ChatListPage extends State<ChatListPage> {
                                                                 .only(top: 3.0),
                                                         child: Row(
                                                           children: [
-                                                            Card(
-                                                              color: context
-                                                                  .color
-                                                                  .tertiary,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                        top: 4,
-                                                                        bottom:
-                                                                            4,
-                                                                        left:
-                                                                            10,
-                                                                        right:
-                                                                            10),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    "AI : ${provider.chatDtoList[index].aIRole}",
-                                                                    style: AppTypo(
-                                                                            typo:
-                                                                                const SoyoMaple(),
-                                                                            fontColor:
-                                                                                Colors.white,
-                                                                            fontWeight: FontWeight.w600)
-                                                                        .body3,
+                                                            SizedBox(
+                                                              width : 100,
+                                                              child: Card(
+                                                                color: context
+                                                                    .color
+                                                                    .tertiary,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          top: 4,
+                                                                          bottom:
+                                                                              4,
+                                                                          left:
+                                                                              5,
+                                                                          right:
+                                                                              5),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                      "AI : ${provider.chatDtoList[index].aIRole}",
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: AppTypo(
+                                                                              typo:
+                                                                                  const SoyoMaple(),
+                                                                              fontColor:
+                                                                                  Colors.white,
+                                                                              fontWeight: FontWeight.w600)
+                                                                          .body3,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
-                                                            Card(
-                                                              color: context
-                                                                  .color
-                                                                  .tertiary,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                        top: 4,
-                                                                        bottom:
-                                                                            4,
-                                                                        left:
-                                                                            10,
-                                                                        right:
-                                                                            10),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    "YOU : ${provider.chatDtoList[index].usrRole}",
-                                                                    style: AppTypo(
-                                                                            typo:
-                                                                                const SoyoMaple(),
-                                                                            fontColor:
-                                                                                Colors.white,
-                                                                            fontWeight: FontWeight.w600)
-                                                                        .body3,
+                                                            SizedBox(
+                                                              width: 100,
+                                                              child: Card(
+                                                                color: context
+                                                                    .color
+                                                                    .tertiary,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          top: 4,
+                                                                          bottom:
+                                                                              4,
+                                                                          left:
+                                                                              5,
+                                                                          right:
+                                                                              5),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                      "YOU : ${provider.chatDtoList[index].usrRole}",
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: AppTypo(
+                                                                              typo:
+                                                                                  const SoyoMaple(),
+                                                                              fontColor:
+                                                                                  Colors.white,
+                                                                              fontWeight: FontWeight.w600)
+                                                                          .body3,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
