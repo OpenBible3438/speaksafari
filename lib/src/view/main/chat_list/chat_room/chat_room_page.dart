@@ -42,6 +42,8 @@ class _ChatroomState extends State<ChatRoomPage> {
   double _currentSliderValue = 0.5;
   int isInterval = 1;
 
+  late bool isError = false;
+
   late final GenerativeModel _model;
   late final ChatSession _chatSession;
 
@@ -125,12 +127,26 @@ class _ChatroomState extends State<ChatRoomPage> {
     tts.setSpeechRate(ma);
   }
 
+  void reloadData () {
+    setState(() {
+      isError = false;
+    });
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isChatSessionLoading == true) {
       // _chatSession이 초기화되지 않은 경우 로딩 상태를 표시하거나 초기화를 기다립니다.
       return const CircularProgressIndicator();
+    } else if (isError == true) {
+      return ElevatedButton(
+        onPressed: reloadData, // 재시도 버튼 클릭 시 reloadData 호출
+        child: const Text('재시도'),
+      );
     } else {
+
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(onPressed: () {
@@ -155,7 +171,7 @@ class _ChatroomState extends State<ChatRoomPage> {
                 ],
               ),
             ],
-            isRepeatingAnimation: true,
+            isRepeatingAnimation: false,
           ),
         ),
         body: Container(
@@ -622,30 +638,72 @@ class _ChatroomState extends State<ChatRoomPage> {
     });
     _scrollToBottom();
 
-    MessageDto messageDto = MessageDto();
-    messageDto.chatUid = widget.chatDto?.chatUid;
-    messageDto.chatSpeaker = "me";
-    messageDto.chatContent = value;
-    service.saveMessage(widget.chatDto?.chatNm ?? '', messageDto);
 
-    final response = await _chatSession.sendMessage(Content.text(
-        '유효한 필드는 채팅 시간, 주제, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 ,상황은  ${widget.chatDto?.chatNm} 이고, 너의 역할은 "${widget.chatDto?.aIRole}", 나의 역할은 ${widget.chatDto?.usrRole}, 번역 내용 은 한국어로 출력,'
-            '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
-            '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_topic" : "${widget.chatDto?.chatCtt}" ,"chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget.chatDto?.aIRole}", "user_role" : "${widget.chatDto?.usrRole}", "chat_trans" : "번역 내용"}.'
-            '   상황극: ${widget.chatDto?.chatNm} '
-            '"user_chat_content"'
-            ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
+    try {
+      final response = await _chatSession.sendMessage(Content.text(
+          '유효한 필드는 채팅 시간, 주제, 대화 내용,나의 말, 번역 내용, 너의 역할, 나의 역할 입니다.채팅 시간은 현재 시간, 대화 내용은 너는 할 말을 영어로 해 ,상황은  ${widget
+              .chatDto?.chatNm} 이고, 너의 역할은 "${widget.chatDto
+              ?.aIRole}", 나의 역할은 ${widget.chatDto?.usrRole}, 번역 내용 은 한국어로 출력,'
+              '출력 형태: {"chat_time": "현재시간을 이러한 형태로 만들어서 넣어줘'
+              '(2013/10/11 09:00)","user_chat_content" : "$value", "chat_topic" : "${widget
+              .chatDto
+              ?.chatCtt}" ,"chat_content": "(너가 할말을 영어로)", "ai_role" : "${widget
+              .chatDto?.aIRole}", "user_role" : "${widget.chatDto
+              ?.usrRole}", "chat_trans" : "번역 내용"}.'
+              '   상황극: ${widget.chatDto?.chatNm} '
+              '"user_chat_content"'
+              ' 의 내용을 보고 다음 상황에 어울리는 말 하나를 출력하고 Json 형태로 보내줘출력:'));
 
-    print(response.text);
 
-    Map<String, dynamic> user = jsonDecode(response.text ?? '');
 
-    MessageDto resMessageDto = MessageDto();
-    resMessageDto.chatUid = widget.chatDto?.chatUid;
-    resMessageDto.chatSpeaker = "ai";
-    resMessageDto.chatContent = user['chat_content'];
-    resMessageDto.chatTrans = user['chat_trans'];
-    service.saveMessage(widget.chatDto?.chatNm ?? '', resMessageDto);
+      var first = response.text?.startsWith("```");
+
+    if (first ?? false) {
+      var sfa = response.text;
+      var second = sfa?.substring(
+          sfa.indexOf('{'),
+          sfa.indexOf('}') + 1);
+      Map<String, dynamic> user = jsonDecode(second ?? "");
+
+      print("-----------test");
+      print(second);
+      MessageDto messageDto = MessageDto();
+      messageDto.chatUid = widget.chatDto?.chatUid;
+      messageDto.chatSpeaker = "me";
+      messageDto.chatContent = value;
+      service.saveMessage(widget.chatDto?.chatNm ?? '', messageDto);
+
+
+      MessageDto resMessageDto = MessageDto();
+      resMessageDto.chatUid = widget.chatDto?.chatUid;
+      resMessageDto.chatSpeaker = "ai";
+      resMessageDto.chatContent = user['chat_content'];
+      resMessageDto.chatTrans = user['chat_trans'];
+      service.saveMessage(widget.chatDto?.chatNm ?? '', resMessageDto);
+    } else {
+      Map<String, dynamic> user = jsonDecode(response.text ?? '');
+
+      MessageDto messageDto = MessageDto();
+      messageDto.chatUid = widget.chatDto?.chatUid;
+      messageDto.chatSpeaker = "me";
+      messageDto.chatContent = value;
+      service.saveMessage(widget.chatDto?.chatNm ?? '', messageDto);
+
+
+      MessageDto resMessageDto = MessageDto();
+      resMessageDto.chatUid = widget.chatDto?.chatUid;
+      resMessageDto.chatSpeaker = "ai";
+      resMessageDto.chatContent = user['chat_content'];
+      resMessageDto.chatTrans = user['chat_trans'];
+      service.saveMessage(widget.chatDto?.chatNm ?? '', resMessageDto);
+    }
+  } catch(e){
+      print("===============");
+        print("$e");
+      setState(() {
+    isError = true;
+      });
+    }
 
     setState(() {
       isLoading = false;

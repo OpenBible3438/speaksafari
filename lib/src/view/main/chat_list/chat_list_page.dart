@@ -19,10 +19,10 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPage extends State<ChatListPage> {
   int currentPage = 1;
-  String emoticonsd = "😊💄🧛‍♂️🐶🐹🐳👍🤣🥳💕😍😘💋🤪🔥😇😈🥱🙄😮🙁😠👎";
-  late List<int> emoticons = emoticonsd.runes.toList();
+  String emojis = "😊💄🐹🐳👍🤣🥳💕😍😘💋🤪🔥😇😈🥱🙄😮🙁😠👎";
+  late List<int> emoticons = emojis.runes.toList();
 
-  /// 파이어베이스에서 채팅방 목록 불러오기
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +49,8 @@ class _ChatListPage extends State<ChatListPage> {
               backgroundColor: Color.fromARGB(255, 248, 248, 248),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(context,
-                          RoutePath.newchat, (route) => false);
+                  Navigator.pushNamed(context,
+                          RoutePath.newchat);
                 },
                 child: Icon(
                   Icons.edit,
@@ -115,9 +115,18 @@ class _ChatListPage extends State<ChatListPage> {
                                         image: AssetImage(
                                             'assets/images/cutylion.png')),
                                     SizedBox(
-                                      height: 15,
+                                      height: 20,
                                     ),
-                                    Text('스피킹 목록이 없습니다. 대화를 시작해 보세요!'),
+                                    Text( style: AppTypo(
+                                        typo:
+                                        const SoyoMaple(),
+                                        fontColor:
+                                        Colors
+                                            .black,
+                                        fontWeight:
+                                        FontWeight
+                                            .w600)
+                                        .body1,  '스피킹 목록이 없습니다. 대화를 시작해 보세요!'),
                                   ],
                                 ),
                               )
@@ -158,7 +167,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                               8.0),
                                                       child: Icon(
                                                           IconData(
-                                                            emoticons[index],
+                                                            emoticons[index%21],
                                                             fontFamily:
                                                                 'MaterialIcons',
                                                           ),

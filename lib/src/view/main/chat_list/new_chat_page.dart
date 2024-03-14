@@ -10,9 +10,8 @@ import 'package:speak_safari/theme/component/card/textfield_card.dart';
 import 'package:speak_safari/util/route_path.dart';
 
 class NewChatPage extends StatefulWidget {
-  const NewChatPage({super.key, required this.listFunc});
+  const NewChatPage({super.key});
 
-  final Function() listFunc;
   @override
   State<NewChatPage> createState() => _NewChatPageState();
 }
@@ -98,8 +97,6 @@ class _NewChatPageState extends State<NewChatPage> {
                      await createFirestore2(newChatDto);
                       //final chatListViewModel = Provider.of<ChatListViewModel>(context, listen: false);
 
-
-                      widget.listFunc();
                       Navigator.popAndPushNamed(context, RoutePath.chatroom, arguments: newChatDto);
 
                     },
