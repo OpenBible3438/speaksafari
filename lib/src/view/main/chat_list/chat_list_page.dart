@@ -6,8 +6,8 @@ import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/theme/component/card/card.dart';
 import 'package:speak_safari/util/route_path.dart';
-
-import '../../../../theme/res/typo.dart';
+import 'package:speak_safari/theme/res/typo.dart';
+import 'package:speak_safari/theme/foundation/app_theme.dart';
 
 class ChatListPage extends StatefulWidget {
   const ChatListPage({
@@ -20,7 +20,7 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPage extends State<ChatListPage> {
   int currentPage = 1;
-
+  List<String> allMessages = [];
   /// 파이어베이스에서 채팅방 목록 불러오기
   @override
   Widget build(BuildContext context) {
@@ -167,7 +167,9 @@ class _ChatListPage extends State<ChatListPage> {
                                                     index]
                                                         .chatCtgr ??
                                                         '',
-                                                    style:                           AppTypo(
+                                                    style:
+
+                                                    AppTypo(
                                                         typo: const SoyoMaple(),
                                                         fontColor: Colors.black,
                                                         fontWeight: FontWeight.w600)
@@ -215,7 +217,7 @@ class _ChatListPage extends State<ChatListPage> {
                                                     child: Text(
                                                       '나 ${provider.chatDtoList[index].usrRole}' ??
                                                           '',
-                                                      style:                           AppTypo(
+                                                      style: AppTypo(
                                                           typo: const SoyoMaple(),
                                                           fontColor: Colors.grey,
                                                           fontWeight: FontWeight.w600)

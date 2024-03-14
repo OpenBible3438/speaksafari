@@ -38,10 +38,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   sign_in_with_apple: ^5.0.0
   google_sign_in: ^6.2.1
-<<<<<<< HEAD
-#  flutter_riverpod: ^2.4.10
-=======
->>>>>>> ff11f1655c1b7135d378e793bca1e3cab24774b3
+
   firebase_core: ^2.26.0
   firebase_auth: ^4.17.7
   animated_text_kit: ^4.2.2
