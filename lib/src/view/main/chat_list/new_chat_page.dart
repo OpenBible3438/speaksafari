@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:speak_safari/src/service/theme_service.dart';
 import 'package:speak_safari/src/view/main/chat_list/chat_list_view_model.dart';
 import 'package:speak_safari/theme/component/button/button.dart';
 import 'package:speak_safari/theme/component/card/textfield_card.dart';
+import 'package:speak_safari/theme/foundation/app_theme.dart';
+import 'package:speak_safari/theme/res/typo.dart';
 import 'package:speak_safari/util/route_path.dart';
 
 class NewChatPage extends StatefulWidget {
@@ -47,6 +50,16 @@ class _NewChatPageState extends State<NewChatPage> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text('영어로 대화하고 싶은 상황을 입력하면\nAI와 대화할 수 있어요.',
+                          textAlign: TextAlign.center,
+                          style: AppTypo(
+                                  typo: const SoyoMaple(),
+                                  fontColor: Colors.black,
+                                  fontWeight: FontWeight.w400)
+                              .body2),
+                    ),
                     TextFieldCard(
                       titleLabel: '제목',
                       hintText: '채팅방 제목을 입력하세요',
