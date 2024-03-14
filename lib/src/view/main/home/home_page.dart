@@ -383,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.redAccent,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(left: 2.0),
                                 child: Text("단어 퀴즈",
                                     style: AppTypo(
                                             typo: const SoyoMaple(),
@@ -418,7 +418,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(left: 2.0),
                                 child: Text("Weekly Ranking",
                                     style: AppTypo(
                                             typo: const SoyoMaple(),

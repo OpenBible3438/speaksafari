@@ -95,6 +95,31 @@ class HomeViewModel extends BaseViewModel {
           .collection('users')
           .get();
     }
+
+    bool isMyUid = false;
+    for (var doc in snapshot2.docs) {
+      var data = doc.data();
+      if (data.containsKey(myUID)) {
+        isMyUid = true;
+      }
+    }
+    if (!isMyUid) {
+      debugPrint('내 UID 없음');
+      // Insert Data
+      await firestore
+          .collection('users_rate')
+          .doc(thisWeekDate)
+          .collection('users')
+          .doc()
+          .set({myUID: weeklyCount});
+      // data 재설정
+      snapshot2 = await firestore
+          .collection("users_rate")
+          .doc(thisWeekDate)
+          .collection('users')
+          .get();
+    }
+
     for (var doc in snapshot2.docs) {
       var data = doc.data();
       if (data.containsKey(myUID)) {
