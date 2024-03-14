@@ -153,23 +153,22 @@ class _HomePageState extends State<HomePage> {
     } else {
       // 단어 퀴즈 남았을 때
       return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('$todayWordRate / 10',
               style: AppTypo(
                       typo: const SoyoMaple(),
                       fontColor: Colors.black,
                       fontWeight: FontWeight.w600)
-                  .headline2),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text("  진행중!",
-                style: AppTypo(
-                        typo: const SoyoMaple(),
-                        fontColor: Colors.black,
-                        fontWeight: FontWeight.w400)
-                    .body1),
-          ),
+                  .headline5),
+          const SizedBox(width: 10),
+          Text("진행중!",
+              style: AppTypo(
+                      typo: const SoyoMaple(),
+                      fontColor: Colors.black,
+                      fontWeight: FontWeight.w400)
+                  .body1),
+          const SizedBox(width: 10),
           const Icon(
             Icons.pets,
             color: Colors.brown,
@@ -311,9 +310,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "chatroom");
-          },
           child: CardComponent(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
