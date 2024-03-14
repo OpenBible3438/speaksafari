@@ -8,11 +8,13 @@ class TextFieldCard extends StatelessWidget {
       {super.key,
       required this.titleLabel,
       required this.hintText,
-      required this.controller});
+      required this.controller,
+      required this.validator});
 
   final String titleLabel;
   final String hintText;
   final TextEditingController controller;
+  final String? Function(dynamic value) validator;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,9 @@ class TextFieldCard extends StatelessWidget {
                         .body2),
               )),
           Expanded(
-              child: TextField(
+              child: TextFormField(
             controller: controller,
+            validator: validator,
             style: AppTypo(
                     typo: const SoyoMaple(),
                     fontColor: Colors.black,
