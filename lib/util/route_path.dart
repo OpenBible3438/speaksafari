@@ -26,7 +26,8 @@ abstract class RoutePath {
         page =  ChatRoomPage(chatDto: chatDto,);
         break;
       case RoutePath.newchat:
-        page = const NewChatPage();
+        //Function() listFunc = settings.arguments as VoidCallback;
+        page =  const NewChatPage();
         break;
     }
 
